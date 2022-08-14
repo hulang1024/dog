@@ -4,7 +4,7 @@ import { drawDebugInfo } from './utils.js';
 
 window.addEventListener('load', () => {
   const canvas = document.getElementById('canvas1');
-  canvas.width = 800;
+  canvas.width = 900;
   canvas.height = 500;
   const context = canvas.getContext('2d');
 

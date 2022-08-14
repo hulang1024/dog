@@ -42,7 +42,7 @@ export default class RollingState extends State {
   }
 
   onKeyPressed(key) {
-    if (key == Input.Keys.Down) {
+    if (key == Input.Keys.Down && !this.player.isOnFloor()) {
       this.to(StateId.Diving);
     }
   }

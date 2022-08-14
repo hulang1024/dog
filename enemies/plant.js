@@ -1,5 +1,4 @@
 import { SpriteAnimation } from "../animation.js";
-import { randomRange } from "../random.js";
 import Enemy from "./enemy.js";
 
 export default class Plant extends Enemy {
@@ -7,7 +6,7 @@ export default class Plant extends Enemy {
     super(game);
     this.width = 60;
     this.height = 87;
-    this.position.x = game.camera.position.x + randomRange(0, game.viewportWidth);
+    this.position.x = game.camera.position.x + game.viewportWidth;
     this.position.y = game.viewportHeight - this.height - game.bottomMargin;
   
     const animation = new SpriteAnimation();

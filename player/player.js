@@ -6,6 +6,7 @@ import { StateId, getState } from './state/state.js';
 import { SpriteAnimation } from '../animation.js';
 import { checkCollision } from '../collision.js';
 import Boom from '../effect.js';
+import FloatingText from '../floating-text.js';
 
 export default class Player extends GameObject {
   constructor(game) {
@@ -50,11 +51,18 @@ export default class Player extends GameObject {
       if (this.nowState.id == StateId.Rolling ||
           this.nowState.id == StateId.Diving) {
         this.game.score++;
+        this.game.add(new FloatingText(
+          this.game, '+1', enemy.position,
+          new Vector2(180, 40)));
         this.game.add(new Boom(
           enemy.position.x + enemy.width * 0.5,
           enemy.position.y + enemy.height * 0.5));
       } else if (!this.invincible) {
         this.nowState.to(StateId.Dizzy);
+        this.game.lives--;
+        if (this.game.lives == 0) {
+          this.game.gameOver = true;
+        }
       }
     }
 

@@ -1,12 +1,11 @@
 import GameObject from "./game-object.js";
 
 export default class Background extends GameObject {
-  constructor(camera) {
+  constructor(camera, theme) {
     super();
     this.width = 1667;
     this.height = 500;
 
-    const theme = 'city';
     for (let l = 0; l < 5; l++) {
       const image = document.getElementById('bg-' +  theme + '-layer-' + (l + 1));
       const t = 0.2 * (l + 1);
@@ -32,15 +31,11 @@ class Layer extends GameObject {
   }
 
   draw(ctx) {
-    ctx.save();
-    // 消除相机translate
-    ctx.translate(this.camera.position.x, this.camera.position.y);
-
-    ctx.drawImage(this.image, this.offsetX, this.offsetY,
-      this.width, this.height);
-    ctx.drawImage(this.image, this.offsetX + this.width, this.offsetY,
-      this.width, this.height);
-
-    ctx.restore();
+    this.camera.with(ctx, false, () => {
+      ctx.drawImage(this.image, this.offsetX, this.offsetY,
+        this.width, this.height);
+      ctx.drawImage(this.image, this.offsetX + this.width, this.offsetY,
+        this.width, this.height);
+    });
   }
 }

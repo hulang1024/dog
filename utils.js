@@ -2,14 +2,15 @@ import Enemy from "./enemies/enemy.js";
 import { Particle } from './particle.js';
 import Input from "./input.js";
 
+const BASE_X = 160;
+const BASE_Y = 28;
+
 export function drawDebugInfo(ctx, game, delta) {
   const { player, camera } = game;
-  const BASE_X = 20;
-  const BASE_Y = 28;
   let y = BASE_Y;
   let newLine = () => y += 20;
 
-  ctx.fillStyle = '#000';
+  ctx.save();
   ctx.font = '14px monospace';
   ctx.fillText('camera.x: ' + camera.position.x.toFixed(2), BASE_X, BASE_Y);
   ctx.fillText('camera.smoothingEnabled: ' + camera.smoothingEnabled, BASE_X, newLine());
@@ -19,7 +20,7 @@ export function drawDebugInfo(ctx, game, delta) {
   ctx.fillText('camera.lookAtTarget:     '
     + (camera.lookAtTarget ? camera.lookAtTarget.constructor.name : null), BASE_X, newLine());
   ctx.fillText('object count:   ' + countObject(game), BASE_X, newLine());
-  ctx.fillText('enemy count:    ' + countEnemy(game), BASE_X, newLine());
+  ctx.fillText('enemy count:    ' + game.enemies.length, BASE_X, newLine());
   ctx.fillText('particle count: ' + countParticle(game), BASE_X, newLine());
   ctx.fillText('player.velocity:  ' + player.velocity.toString(), BASE_X, newLine());
   ctx.fillText('player.position:  ' + player.position.toString(), BASE_X, newLine());
@@ -34,6 +35,8 @@ export function drawDebugInfo(ctx, game, delta) {
   Input.getPressedKeys().forEach((key) => {
     ctx.fillText(key, game.viewportWidth - 70, newLine());
   });
+
+  ctx.restore();
 }
 
 
@@ -41,16 +44,6 @@ function countParticle(game) {
   let cnt = 0;
   game.children.forEach((o) => {
     if (o instanceof Particle) {
-      cnt++;
-    }
-  });
-  return cnt;
-}
-
-function countEnemy(game) {
-  let cnt = 0;
-  game.children.forEach((o) => {
-    if (o instanceof Enemy) {
       cnt++;
     }
   });

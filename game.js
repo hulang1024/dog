@@ -7,29 +7,44 @@ import { SmallSpider, BigSpider } from './enemies/spider.js';
 import Fly from './enemies/fly.js';
 import Plant from './enemies/plant.js';
 import { randomRange } from './random.js';
+import { HUD } from './hud.js';
 
 export default class Game extends GameObject {
   constructor(viewportWidth, viewportHeight) {
     super();
     this.viewportWidth = viewportWidth;
     this.viewportHeight = viewportHeight;
-    this.bottomMargin = 82;
+
+    this.theme = 'forest';
+    this.bottomMargin = {city: 82, forest: 40}[this.theme];
 
     this.score = 0;
+    this.lives = 5;
+    this.time = 0;
+    this.gameOver = false;
 
     this.camera = new Camera(this);
     this.add(this.camera);
 
-    this.background = new Background(this.camera);
+    this.background = new Background(this.camera, this.theme);
     this.add(this.background);
 
     this.player = new Player(this);
     this.add(this.player);
 
+    this.hud = new HUD(this);
+    this.add(this.hud);
+
     this.enemies = [];
   }
 
   update(delta) {
+    if (this.gameOver) {
+      return;
+    }
+
+    this.time += delta;
+
     this.enemies.forEach((enemy, i) => {
       if (enemy.isQueuedForDelete) {
         this.enemies.splice(i, 1);
@@ -38,7 +53,7 @@ export default class Game extends GameObject {
         enemy.queueDelete();
       }
     });
-    for (let count = 10 - this.enemies.length; count > 0; count--) {
+    for (let count = 3 - this.enemies.length; count > 0; count--) {
       const rv = Math.floor(randomRange(1, 5));
       let enemy;
       if (rv == 1) {
@@ -66,7 +81,7 @@ export default class Game extends GameObject {
   }
 
   draw(ctx, delta) {
-    this.camera.with(ctx, () => {
+    this.camera.with(ctx, true, () => {
       traverseTrees(this.children, (node) => {
         node.draw(ctx, delta);
       });
