@@ -1,5 +1,5 @@
 import Enemy from "./enemies/enemy.js";
-import { Particle } from './particle.js';
+import { Particle } from './effect/particle.js';
 import Input from "./input.js";
 
 const BASE_X = 160;
@@ -12,6 +12,9 @@ export function drawDebugInfo(ctx, game, delta) {
 
   ctx.save();
   ctx.font = '14px monospace';
+  if (game.theme == 'forest') {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+  }
   ctx.fillText('camera.x: ' + camera.position.x.toFixed(2), BASE_X, BASE_Y);
   ctx.fillText('camera.smoothingEnabled: ' + camera.smoothingEnabled, BASE_X, newLine());
   ctx.fillText('camera.smoothingSpeed:   ' + camera.smoothingSpeed, BASE_X, newLine());
@@ -20,8 +23,8 @@ export function drawDebugInfo(ctx, game, delta) {
   ctx.fillText('camera.lookAtTarget:     '
     + (camera.lookAtTarget ? camera.lookAtTarget.constructor.name : null), BASE_X, newLine());
   ctx.fillText('object count:   ' + countObject(game), BASE_X, newLine());
-  ctx.fillText('enemy count:    ' + game.enemies.length, BASE_X, newLine());
-  ctx.fillText('particle count: ' + countParticle(game), BASE_X, newLine());
+  ctx.fillText('enemy count:    ' + game.enemyGroup.count(), BASE_X, newLine());
+  ctx.fillText('particle count: ' + game.particleGroup.count(), BASE_X, newLine());
   ctx.fillText('player.velocity:  ' + player.velocity.toString(), BASE_X, newLine());
   ctx.fillText('player.position:  ' + player.position.toString(), BASE_X, newLine());
   ctx.fillText('player.state:     ' + player.nowState.id, BASE_X, newLine());
@@ -37,17 +40,6 @@ export function drawDebugInfo(ctx, game, delta) {
   });
 
   ctx.restore();
-}
-
-
-function countParticle(game) {
-  let cnt = 0;
-  game.children.forEach((o) => {
-    if (o instanceof Particle) {
-      cnt++;
-    }
-  });
-  return cnt;
 }
 
 function countObject(node) {

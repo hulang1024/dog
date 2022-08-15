@@ -4,12 +4,13 @@ import { randomRange } from "../random.js";
 import Enemy from "./enemy.js";
 
 export class BaseSpider extends Enemy {
-  constructor(game) {
-    super(game);
-    this.position.x = game.camera.position.x + randomRange(0, game.viewportWidth);
+  constructor(game, score, ageMax) {
+    super(game, score);
     this.position.y = -this.height + randomRange(0, 10);
     this.silkYOffset = 0;
     this.slikWidth = 1;
+    this.age = 0;
+    this.ageMax = ageMax;
   }
 
   update(delta) {
@@ -26,6 +27,10 @@ export class BaseSpider extends Enemy {
       if (this.position.y < -this.height) {
         this.position.y = -this.height;
         this.velocity.y = -this.velocity.y;
+        this.age++;
+        if (this.age >= this.ageMax) {
+          this.queueDelete();
+        }
       }
     }
   }
@@ -44,10 +49,10 @@ export class BaseSpider extends Enemy {
 
 export class SmallSpider extends BaseSpider {
   constructor(game) {
-    super(game);
+    super(game, 2, 3);
     this.width = 100;
     this.height = 56;
-    this.velocity = new Vector2(0, randomRange(50, 200));
+    this.velocity = new Vector2(0, randomRange(100, 180));
     this.silkYOffset = 4;
     this.slikWidth = 1;
   
@@ -69,7 +74,7 @@ export class SmallSpider extends BaseSpider {
 
 export class BigSpider extends BaseSpider {
   constructor(game) {
-    super(game);
+    super(game, 1, 2);
     this.width = 120;
     this.height = 144;
     this.velocity = new Vector2(0, randomRange(30, 160));

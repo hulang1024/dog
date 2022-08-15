@@ -1,5 +1,5 @@
 import Input from '../../input.js';
-import { FireParticlesManager } from '../../particle.js';
+import { FireParticlesManager } from '../../effect/particle.js';
 import { State, StateId } from './state.js';
 
 export default class RollingState extends State {

@@ -4,7 +4,7 @@ import Enemy from "./enemy.js";
 
 export default class Fly extends Enemy {
   constructor(game) {
-    super(game);
+    super(game, 3);
     this.width = 60;
     this.height = 44;
     this.position.x = game.camera.position.x + game.viewportWidth;

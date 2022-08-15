@@ -57,3 +57,13 @@ export default class GameObject {
     });
   }
 }
+
+export class Group extends GameObject {
+  clear() {
+    this.children = [];
+  }
+
+  count() {
+    return this.children.length;
+  }
+}

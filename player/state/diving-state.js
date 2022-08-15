@@ -1,5 +1,5 @@
-import { SplashParticle } from '../../particle.js';
-import { FireParticlesManager } from '../../particle.js';
+import { SplashParticle } from '../../effect/particle.js';
+import { FireParticlesManager } from '../../effect/particle.js';
 import { State, StateId } from './state.js';
 
 export default class DivingState extends State {
@@ -19,7 +19,7 @@ export default class DivingState extends State {
     const { player } = this;
     if (player.isOnFloor()) {
       for (let i = 0; i < 30; i++) {
-        this.player.game.add(
+        this.game.particleGroup.add(
           new SplashParticle(
             this.player.position.x + this.player.width / 2,
             this.player.position.y + this.player.height));

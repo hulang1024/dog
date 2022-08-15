@@ -1,11 +1,10 @@
-import GameObject from './game-object.js';
+import GameObject from '../game-object.js';
 
 export default class FloatingText extends GameObject {
   constructor(game, text, fromPosition, toPosition) {
     super();
     this.text = text;
     this.position = fromPosition.subtract(game.camera.position);
-    console.log(this.position);
     this.toPosition = toPosition;
     this.timer = 0;
     this.camera = game.camera;
@@ -26,7 +25,7 @@ export default class FloatingText extends GameObject {
       ctx.shadowOffsetY = 2;
       ctx.shadowColor = '#fff';
       ctx.shadowBlur = 0;
-      ctx.font = '20px Creepster';
+      ctx.font = '24px Creepster';
       ctx.fillStyle = '#000';
       ctx.fillText(this.text, this.position.x, this.position.y);
     });

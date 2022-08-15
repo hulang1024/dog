@@ -5,8 +5,8 @@ import { setupStateTable } from './state/state-table.js';
 import { StateId, getState } from './state/state.js';
 import { SpriteAnimation } from '../animation.js';
 import { checkCollision } from '../collision.js';
-import Boom from '../effect.js';
-import FloatingText from '../floating-text.js';
+import Boom from '../effect/boom.js';
+import FloatingText from '../effect/floating-text.js';
 
 export default class Player extends GameObject {
   constructor(game) {
@@ -19,7 +19,8 @@ export default class Player extends GameObject {
     this.position.y = this.game.viewportHeight - this.height - this.game.bottomMargin;
     this.velocity = Vector2.Zero();
     this.weight = 120;
-    this.invincibleDuration = 200;
+    // 无敌时长（应大于受击或眩晕的动画时长）
+    this.invincibleDuration = 600;
     this.invincible = false;
 
     this.hurtCollisionRect = {
@@ -45,23 +46,23 @@ export default class Player extends GameObject {
 
     this.hurtCollisionRect.position.x = this.position.x + 16;
     this.hurtCollisionRect.position.y = this.position.y + 20;
-    const enemy = checkCollision(this.hurtCollisionRect, this.game.enemies);
+    const enemy = checkCollision(
+      this.hurtCollisionRect, this.game.enemyGroup.children);
     if (enemy) {
       enemy.queueDelete();
       if (this.nowState.id == StateId.Rolling ||
           this.nowState.id == StateId.Diving) {
         this.game.score++;
         this.game.add(new FloatingText(
-          this.game, '+1', enemy.position,
+          this.game, '+' + enemy.score, enemy.position,
           new Vector2(180, 40)));
         this.game.add(new Boom(
           enemy.position.x + enemy.width * 0.5,
           enemy.position.y + enemy.height * 0.5));
       } else if (!this.invincible) {
-        this.nowState.to(StateId.Dizzy);
-        this.game.lives--;
-        if (this.game.lives == 0) {
-          this.game.gameOver = true;
+        if (this.game.lives > 0) {          
+          this.game.lives--;
+          this.nowState.to(StateId.Dizzy);
         }
       }
     }
@@ -152,7 +153,7 @@ const playerAnimations = {
     frameRow: 7,
     frameLength: 7,
   },
-  ko: {
+  die: {
     frameRow: 8,
     frameLength: 12,
   },

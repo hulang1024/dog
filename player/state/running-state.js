@@ -1,5 +1,5 @@
 import Input from '../../input.js';
-import { DustParticle } from '../../particle.js';
+import { DustParticle } from '../../effect/particle.js';
 import { State, StateId } from './state.js';
 
 export default class RunningState extends State {
@@ -20,7 +20,7 @@ export default class RunningState extends State {
     const dust = new DustParticle(
       this.player.position.x + this.player.width * 0.5,
       this.player.position.y + this.player.height);
-    this.game.add(dust);
+    this.game.particleGroup.add(dust);
   }
 
   onKeyPressed(key) {

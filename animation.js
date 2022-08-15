@@ -13,14 +13,17 @@ export class SpriteAnimation extends GameObject {
     this.frameLength = 6;
     this.animations = [];
     this.isPause = true;
-    this.finishCallbacks = [];
+    this.animationName = '';
+    this.finishOnceCallbacks = {};
   }
 
   play(name) {
+    this.animationName = name;
     const animation = this.animations[name];
     this.frameCol = 0;
     this.frameRow = animation.frameRow;
     this.frameLength = animation.frameLength;
+    this.intervelTime = 0;
     this.isPause = false;
   }
 
@@ -37,8 +40,10 @@ export class SpriteAnimation extends GameObject {
       if (this.frameCol < this.frameLength - 1) {
         this.frameCol++;
       } else {
-        this.frameCol = 0;
-        this.finishCallbacks.forEach(cb => cb());
+        this._emitFinish();
+        if (!this.isPause) {
+          this.frameCol = 0;
+        }
       }
       this.intervelTime = 0;
     }
@@ -54,14 +59,19 @@ export class SpriteAnimation extends GameObject {
       this.parent.width, this.parent.height);
   }
 
-  addFinishCallback(cb) {
-    this.finishCallbacks.push(cb);
+  onFinishOnce(cb) {
+    (this.finishOnceCallbacks[this.animationName] =
+      this.finishOnceCallbacks[this.animationName] || []).push(cb);
   }
 
-  removeFinishCallback(cb) {
-    const i = this.finishCallbacks.indexOf(cb);
-    if (i > -1) {
-      this.finishCallbacks.splice(i, 1);
+  _emitFinish() {
+    const callbacks = this.finishOnceCallbacks[this.animationName];
+    if (!callbacks) {
+      return;
+    }
+    let callback;
+    while (callback = callbacks.shift()) {
+      callback();
     }
   }
 }

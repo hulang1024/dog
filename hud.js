@@ -3,7 +3,7 @@ import GameObject from "./game-object.js";
 const BASE_X = 20;
 const BASE_Y = 40;
 
-export class HUD extends GameObject {
+export default class HUD extends GameObject {
   constructor(game) {
     super();
     this.game = game;
@@ -21,11 +21,11 @@ export class HUD extends GameObject {
       ctx.fillStyle = '#000';
       ctx.fillText('Score: ' + this.game.score, BASE_X, BASE_Y);
       ctx.fillText('Time:  ' + this.game.time.toFixed(1), BASE_X, BASE_Y + 40);
-      ctx.fillText('Enemy: ' + this.game.enemies.length, BASE_X, BASE_Y + 80);
+      ctx.fillText('Enemy: ' + this.game.enemyGroup.count(), BASE_X, BASE_Y + 80);
 
       this.drawLives(ctx);
 
-      if (this.game.gameOver) {
+      if (this.game.isGameOver) {
         ctx.font = '60px Creepster';
         ctx.textAlign = 'center';
         ctx.fillStyle = '#000';

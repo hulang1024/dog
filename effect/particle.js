@@ -1,6 +1,6 @@
-import GameObject from "./game-object.js";
-import { randomRange } from "./random.js";
-import Vector2 from "./vector.js";
+import GameObject from "../game-object.js";
+import { randomRange } from "../random.js";
+import Vector2 from "../vector.js";
 
 export class Particle extends GameObject {
   constructor() {
@@ -112,7 +112,7 @@ export class FireParticlesManager {
       const particle = new FireParticle(
         this.player.position.x + this.player.width * 0.5,
         this.player.position.y + this.player.height * 0.5);
-      this.game.add(particle);
+      this.game.particleGroup.add(particle);
     }
   }
 

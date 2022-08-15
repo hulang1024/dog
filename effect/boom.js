@@ -1,5 +1,5 @@
-import GameObject from "./game-object.js";
-import { SpriteAnimation } from "./animation.js";
+import GameObject from "../game-object.js";
+import { SpriteAnimation } from "../animation.js";
 
 export default class Boom extends GameObject {
   constructor(x, y) {
@@ -20,12 +20,10 @@ export default class Boom extends GameObject {
     };
     this.add(animation);
 
-    const onFinish = () => {
-      this.queueDelete();
-      animation.removeFinishCallback(onFinish);
-    };
-    animation.addFinishCallback(onFinish);
     animation.play('boom');
+    animation.onFinishOnce(() => {
+      this.queueDelete();
+    });
     const sound = new Audio();
     sound.src = 'assets/effect/boom.wav';
     sound.play();

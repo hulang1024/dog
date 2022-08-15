@@ -1,4 +1,5 @@
 import Input from '../../input.js';
+import { randomRange } from '../../random.js';
 import { State, StateId } from './state.js';
 
 export default class StandingState extends State {
@@ -11,6 +12,14 @@ export default class StandingState extends State {
     player.animation.play('idle');
     player.velocity.x = 0;
     player.velocity.y = 0;
+    this.timer = randomRange(5, 20);
+  }
+
+  onUpdate(delta) {
+    this.timer -= delta;
+    if (this.timer <= 0) {
+      this.to(StateId.Sitting);
+    }
   }
 
   onKeyPressed(key) {

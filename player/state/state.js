@@ -19,6 +19,7 @@ export class State {
     player.nowState = getState(newStateId);
     player.nowState.prevState = this;
     player.nowState.onEnter(args);
+    console.log('State:', this.id + '->' + newStateId);
   }
 
   onEnter() {}

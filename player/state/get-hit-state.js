@@ -19,39 +19,21 @@ export class BaseGetHitState extends State {
     player.invincible = true;
     player.animation.play(this.animationName);
     this.camera.lookAt(player);
-    const onFinish = () => {
+    player.animation.onFinishOnce(() => {
       player.animation.pause();
-      player.animation.removeFinishCallback(onFinish);
-      if (player.isOnFloor()) {
-        this.to(StateId.Standing);
+      if (this.game.lives == 0) {
+        this.to(StateId.Dead);
       } else {
-        this.to(StateId.Falling);
+        if (player.isOnFloor()) {
+          this.to(StateId.Standing);
+        } else {
+          this.to(StateId.Falling);
+        }
       }
-      setTimeout(() => {
-        player.invincible = false;
-      }, player.invincibleDuration);
-    };
-    player.animation.addFinishCallback(onFinish);
-  }
-
-  onKeyPressed(key) {
-    if (!this.player.invincible) {
-      return;
-    }
-    switch (key) {
-      case Input.Keys.Left:
-        this.to(StateId.Running, -1);
-        break;
-      case Input.Keys.Right:
-        this.to(StateId.Running, 1);
-        break;
-      case Input.Keys.Up:
-        this.to(StateId.Jumping);
-        break;
-      case Input.Keys.Down:
-        this.to(StateId.Sitting);
-        break;
-    }
+    });
+    setTimeout(() => {
+      player.invincible = false;
+    }, player.invincibleDuration);
   }
 }
 

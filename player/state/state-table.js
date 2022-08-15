@@ -7,6 +7,7 @@ import RollingState from './rolling-state.js';
 import GetHitState from './get-hit-state.js';
 import DivingState from './diving-state.js';
 import DizzyState from './dizzy-state.js';
+import DeadState from './dead-state.js';
 
 export const StateId = {
   Standing: 'Standing',
@@ -18,24 +19,24 @@ export const StateId = {
   Dizzy: 'Dizzy',
   GetHit: 'GetHit',
   Diving: 'Diving',
+  Dead: 'Dead',
 };
 
 let stateTable = null;
 
 export function setupStateTable(player) {
-  if (!stateTable) {
-    stateTable = {
-      [StateId.Standing]: new StandingState(player),
-      [StateId.Sitting]: new SittingState(player),
-      [StateId.Running]: new RunningState(player),
-      [StateId.Jumping]: new JumpingState(player),
-      [StateId.Falling]: new FallingState(player),
-      [StateId.Rolling]: new RollingState(player),
-      [StateId.Dizzy] : new DizzyState(player),
-      [StateId.GetHit] : new GetHitState(player),
-      [StateId.Diving] : new DivingState(player),
-    };
-  }
+  stateTable = {
+    [StateId.Standing]: new StandingState(player),
+    [StateId.Sitting]: new SittingState(player),
+    [StateId.Running]: new RunningState(player),
+    [StateId.Jumping]: new JumpingState(player),
+    [StateId.Falling]: new FallingState(player),
+    [StateId.Rolling]: new RollingState(player),
+    [StateId.Dizzy] : new DizzyState(player),
+    [StateId.GetHit] : new GetHitState(player),
+    [StateId.Diving] : new DivingState(player),
+    [StateId.Dead] : new DeadState(player),
+  };
   return stateTable;
 }
 

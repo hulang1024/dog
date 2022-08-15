@@ -3,7 +3,7 @@ import Enemy from "./enemy.js";
 
 export default class Plant extends Enemy {
   constructor(game) {
-    super(game);
+    super(game, 1);
     this.width = 60;
     this.height = 87;
     this.position.x = game.camera.position.x + game.viewportWidth;
