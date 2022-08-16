@@ -123,7 +123,8 @@ export default class Game extends GameObject {
         Game.debugOptions.enableBox = !Game.debugOptions.enableBox;
         break;
       case Input.Keys.I:
-        Game.debugOptions.displayStatesInfo = !Game.debugOptions.displayStatesInfo;
+        Game.debugOptions.displayStatesInfo =
+          !Game.debugOptions.displayStatesInfo;
         break;
       case Input.Keys.P:
         this.camera.position.x += 10;
@@ -142,7 +143,8 @@ export default class Game extends GameObject {
           this.camera.followTarget == this.player ? null : this.player);
         break;
       case Input.Keys.Num9:
-        Game.debugOptions.displaySound2DVolume = !Game.debugOptions.displaySound2DVolume;
+        Game.debugOptions.displaySound2DVolume =
+          !Game.debugOptions.displaySound2DVolume;
         break;
     }
   }

@@ -44,8 +44,7 @@ export default class Player extends GameObject {
   update(delta) {
     this.nowState.onUpdate(delta);
 
-    this.hurtCollisionRect.position.x = this.position.x + 16;
-    this.hurtCollisionRect.position.y = this.position.y + 20;
+    this.hurtCollisionRect.position.set(this.position.x + 16, this.position.y + 20);
     const enemy = checkCollision(
       this.hurtCollisionRect, this.game.enemyManager.children);
     if (enemy) {

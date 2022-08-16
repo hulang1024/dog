@@ -3,8 +3,6 @@ import GameObject from "./game-object.js";
 export default class Camera extends GameObject {
   constructor(game) {
     super();
-    this.position.x = 0;
-    this.position.y = 0;
     this.width = game.viewportWidth;
     this.game = game;
     this.smoothingEnabled = true;
@@ -80,8 +78,7 @@ export default class Camera extends GameObject {
   reset() {
     this.followTarget = null;
     this.lookAtTarget = null;
-    this.position.x = 0;
-    this.position.y = 0;
+    this.position.set(0, 0);
   }
 
   with(ctx, isWith, draw) {

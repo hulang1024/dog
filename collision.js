@@ -1,7 +1,7 @@
-export function checkCollision(collisionRect, objects) {
-  for (let i = 0; i < objects.length; i++) {
-    if (isRectCollision(collisionRect, objects[i])) {
-      return objects[i];
+export function checkCollision(rect, otherRects) {
+  for (let i = 0; i < otherRects.length; i++) {
+    if (isRectCollision(rect, otherRects[i])) {
+      return otherRects[i];
     }
   }
   return null;

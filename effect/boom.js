@@ -6,8 +6,7 @@ export default class Boom extends GameObject {
     super();
     this.width = 100;
     this.height = 90;
-    this.position.x = x;
-    this.position.y = y;
+    this.position.set(x, y);
     const animation = new SpriteAnimation();
     animation.image = document.getElementById('boom');
     animation.spriteWidth = this.width;

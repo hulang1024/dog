@@ -1,6 +1,6 @@
 import { SpriteAnimation } from "../animation.js";
 import { Sound2D } from "../sound.js";
-import { random, randomRange } from "../random.js";
+import { randomRange } from "../random.js";
 import Enemy from "./enemy.js";
 
 export default class Zombie extends Enemy {

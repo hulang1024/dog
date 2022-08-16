@@ -17,8 +17,7 @@ export class Particle extends GameObject {
 export class DustParticle extends Particle {
   constructor(x, y) {
     super();
-    this.position.x = x;
-    this.position.y = y;
+    this.position.set(x, y);
     this.velocity = new Vector2(-randomRange(0, 62), -randomRange(0, 62));
     this.size = randomRange(10, 20);
   }
@@ -44,8 +43,7 @@ export class DustParticle extends Particle {
 export class FireParticle extends Particle {
   constructor(x, y) {
     super();
-    this.position.x = x;
-    this.position.y = y;
+    this.position.set(x, y);
     this.velocity = new Vector2(-1 * 62, -1 * 62);
     this.size = randomRange(90, 120);
     this.image = document.getElementById('fire');
