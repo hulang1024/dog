@@ -1,4 +1,5 @@
 import { SpriteAnimation } from "../animation.js";
+import { Sound2D } from "../sound.js";
 import Vector2 from "../vector.js";
 import { randomRange } from "../random.js";
 import Enemy from "./enemy.js";
@@ -11,6 +12,10 @@ export class BaseSpider extends Enemy {
     this.slikWidth = 1;
     this.age = 0;
     this.ageMax = ageMax;
+    this.sound = new Sound2D('assets/sounds/spider_chattering.wav', this.game);
+    this.sound.audio.loop = true;
+    this.sound.play();
+    this.add(this.sound);
   }
 
   update(delta) {
@@ -55,7 +60,8 @@ export class SmallSpider extends BaseSpider {
     this.velocity = new Vector2(0, randomRange(100, 180));
     this.silkYOffset = 4;
     this.slikWidth = 1;
-  
+    this.sound.volumeFactor = 0.02;
+
     const animation = new SpriteAnimation();
     animation.image = document.getElementById('enemy-spider');
     animation.spriteWidth = 310;
@@ -80,7 +86,8 @@ export class BigSpider extends BaseSpider {
     this.velocity = new Vector2(0, randomRange(30, 160));
     this.silkYOffset = 44;
     this.slikWidth = 1.5;
-  
+    this.sound.volumeFactor = 0.04;
+
     const animation = new SpriteAnimation();
     animation.image = document.getElementById('enemy-spider-big');
     animation.spriteWidth = this.width;

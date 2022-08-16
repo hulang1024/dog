@@ -1,4 +1,5 @@
 import { SpriteAnimation } from "../animation.js";
+import { Sound2D } from "../sound.js";
 import { random, randomRange } from "../random.js";
 import Enemy from "./enemy.js";
 
@@ -13,12 +14,13 @@ export default class Fly extends Enemy {
     this.flapSpeed = Math.floor(randomRange(1, 4) * 62);
     this.angle = 0;
     this.angleSpeed = random() * 0.2 * 62;
-    this.curve = randomRange(0, 7);
+    this.curve = randomRange(0, 2);
 
     const animation = new SpriteAnimation();
     animation.image = document.getElementById('enemy-fly');
     animation.spriteWidth = this.width;
     animation.spriteHeight = this.height;
+    animation.intervelFps = 16;
     animation.animations =  {
       fly: {
         frameRow: 0,
@@ -28,6 +30,13 @@ export default class Fly extends Enemy {
     this.add(animation);
 
     animation.play('fly');
+
+    this.sound = new Sound2D('assets/sounds/bird_flap.flac', this.game);
+    this.sound.audio.playbackRate = 10;
+    this.sound.audio.loop = true;
+    this.sound.volumeFactor = 0.02;
+    this.sound.play();
+    this.add(this.sound);
   }
 
   update(delta) {

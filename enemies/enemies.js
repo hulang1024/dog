@@ -1,6 +1,7 @@
 import { SmallSpider, BigSpider } from './spider.js';
 import Fly from './fly.js';
 import Plant from './plant.js';
+import Zombie from './zombie.js';
 import { random, randomRange } from '../random.js';
 import { Group } from '../game-object.js';
 
@@ -20,7 +21,7 @@ export class EnemyManager extends Group {
     });
 
     for (let count = 6 - this.count(); count > 0; count--) {
-      const rv = Math.floor(randomRange(1, 4));
+      const rv = Math.floor(randomRange(1, 5));
       let enemy;
       if (rv == 1) {
         enemy = random() > 0.5
@@ -38,6 +39,8 @@ export class EnemyManager extends Group {
         enemy = new Fly(this.game);
       } else if (rv == 3) {
         enemy = new Plant(this.game);
+      } else if (rv == 4) {
+        enemy = new Zombie(this.game);
       }
       this.add(enemy);
     }

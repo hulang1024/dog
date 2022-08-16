@@ -20,10 +20,14 @@ export default class GameObject {
     return this.children;
   }
 
-  remove(child) {
+  deleteChild(child) {
     const i = this.children.indexOf(child);
     if (i > -1) {
       this.children.splice(i, 1);
+      child.delete();
+      child.children.forEach((node) => {
+        node.delete();
+      });
     }
   }
 
@@ -32,6 +36,8 @@ export default class GameObject {
   }
 
   update(delta) {}
+
+  delete() {}
 
   draw(context) {
     if (Game.isDebugMode && Game.debugOptions.enableBox) {

@@ -3,6 +3,7 @@ import Background from './background.js';
 import Camera from './camera.js';
 import Player from './player/player.js';
 import Input from './input.js';
+import { pauseAllSounds, resumeAllSounds, Sound2D } from './sound.js';
 import HUD from './hud.js';
 import { EnemyManager } from './enemies/enemies.js';
 
@@ -41,6 +42,7 @@ export default class Game extends GameObject {
 
   update(delta) {
     if (this.isGameOver) {
+      this.onGameOver();
       return;
     }
 
@@ -52,7 +54,7 @@ export default class Game extends GameObject {
 
     traverseTrees(this.children, (node) => {
       if (node.isQueuedForDelete) {
-        node.parent.remove(node);
+        node.parent.deleteChild(node);
       }
     });
   }
@@ -62,6 +64,15 @@ export default class Game extends GameObject {
       traverseTrees(this.children, (node) => {
         node.draw(ctx, delta);
       });
+    });
+  }
+
+  onGameOver() {
+    pauseAllSounds();
+    traverseTrees(this.children, (node) => {
+      if (node instanceof Sound2D) {
+        node.delete();
+      }
     });
   }
 
@@ -83,7 +94,7 @@ export default class Game extends GameObject {
       c == this.enemyManager
     ));
 
-    this.remove(this.player);
+    this.deleteChild(this.player);
     this.player = new Player(this);
     this.add(this.player);
 
@@ -98,6 +109,11 @@ export default class Game extends GameObject {
           this.restart();
         } else {
           Game.isPause = !Game.isPause;
+          if (Game.isPause) {
+            pauseAllSounds();
+          } else {
+            resumeAllSounds();
+          }
         }
         break;
       case Input.Keys.D:
@@ -125,6 +141,9 @@ export default class Game extends GameObject {
         this.camera.follow(
           this.camera.followTarget == this.player ? null : this.player);
         break;
+      case Input.Keys.Num9:
+        Game.debugOptions.displaySound2DVolume = !Game.debugOptions.displaySound2DVolume;
+        break;
     }
   }
 }
@@ -138,7 +157,8 @@ function traverseTrees(nodes, visit) {
 
 Game.isDebugMode = true;
 Game.debugOptions = {
-  displayStatesInfo: true,
+  displayStatesInfo: false,
   enableBox: false,
+  displaySound2DVolume: false
 };
-Game.isPause = false;
+Game.isPause = true;

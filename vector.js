@@ -18,6 +18,12 @@ export default class Vector2 {
     return new Vector2(this.x - other.x, this.y - other.y);
   }
 
+  distance(other) {
+    const dx = this.x - other.x;
+    const dy = this.y - other.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
   clone() {
     return new Vector2(this.x, this.y);
   }
@@ -26,7 +32,7 @@ export default class Vector2 {
     return '(' + this.x.toFixed(2) + ',' + this.y.toFixed(2) + ')';
   }
 }
-
+Vector2.ZERO = new Vector2(0, 0);
 Vector2.Zero = () => new Vector2(0, 0);
 Vector2.Up = () => new Vector2(0, -1);
 Vector2.Right = () => new Vector2(1, 0);

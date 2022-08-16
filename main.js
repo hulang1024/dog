@@ -4,15 +4,23 @@ import { initRandomSeed } from './random.js';
 import { drawDebugInfo, parseSearchParams } from './utils.js';
 
 window.addEventListener('load', () => {
+  const loadingEl = document.getElementById('loading');
+  loadingEl.style.display = 'none';
+
   const canvas = document.getElementById('canvas1');
   canvas.width = 900;
   canvas.height = 500;
+  canvas.style.display = 'block';
+  
   const context = canvas.getContext('2d');
 
   const searchParams = parseSearchParams();
   initRandomSeed(searchParams.r || new Date().getTime().toString());
 
   const game = new Game(canvas.width, canvas.height);
+
+  game.hud.draw(context);
+  game.draw(context);
 
   Input.addKeyListener(
     game.onKeyPressed.bind(game),

@@ -30,7 +30,7 @@ export default class Player extends GameObject {
     };
     
     this.animation = new SpriteAnimation();
-    this.animation.image = document.getElementById('player');
+    this.animation.image = document.getElementById('player-black');
     this.animation.spriteWidth = 100;
     this.animation.spriteHeight = 91.3;
     this.animation.animations = playerAnimations;

@@ -1,4 +1,5 @@
 import GameObject from "./game-object.js";
+import Game from "./game.js";
 
 const BASE_X = 20;
 const BASE_Y = 40;
@@ -31,6 +32,11 @@ export default class HUD extends GameObject {
         ctx.fillStyle = '#000';
         ctx.fillText('Game Over!',
           this.game.viewportWidth * 0.5, this.game.viewportHeight * 0.5);
+      } else if (Game.isPause) {
+        ctx.font = '60px Creepster';
+        ctx.textAlign = 'center';
+        ctx.fillText('Press Enter to Start!',
+        this.game.viewportWidth * 0.5, this.game.viewportHeight * 0.5);
       }
     });
   }
