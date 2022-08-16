@@ -1,31 +1,32 @@
 import { SmallSpider, BigSpider } from './spider.js';
 import Fly from './fly.js';
 import Plant from './plant.js';
-import { randomRange } from '../random.js';
+import { random, randomRange } from '../random.js';
+import { Group } from '../game-object.js';
 
-export class EnemiesManager {
+export class EnemyManager extends Group {
   constructor(game) {
+    super();
     this.game = game;
     this.player = game.player;
     this.camera = game.camera;
-    this.enemyGroup = game.enemyGroup;
   }
 
   update(delta) {
-    this.enemyGroup.children.forEach((enemy) => {
+    this.children.forEach((enemy) => {
       if (enemy.position.x - this.camera.position.x < -enemy.width) {
         enemy.queueDelete();
       }
     });
 
-    for (let count = 6 - this.enemyGroup.count(); count > 0; count--) {
+    for (let count = 6 - this.count(); count > 0; count--) {
       const rv = Math.floor(randomRange(1, 4));
       let enemy;
       if (rv == 1) {
-        enemy = Math.random() > 0.5
+        enemy = random() > 0.5
           ? new BigSpider(this.game)
           : new SmallSpider(this.game);
-        if (Math.random() > 0.5) {
+        if (random() > 0.5) {
           enemy.position.x = randomRange(
             this.camera.position.x, this.player.position.x);
         } else {
@@ -38,7 +39,7 @@ export class EnemiesManager {
       } else if (rv == 3) {
         enemy = new Plant(this.game);
       }
-      this.enemyGroup.add(enemy);
+      this.add(enemy);
     }
   }
 }

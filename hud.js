@@ -21,7 +21,7 @@ export default class HUD extends GameObject {
       ctx.fillStyle = '#000';
       ctx.fillText('Score: ' + this.game.score, BASE_X, BASE_Y);
       ctx.fillText('Time:  ' + this.game.time.toFixed(1), BASE_X, BASE_Y + 40);
-      ctx.fillText('Enemy: ' + this.game.enemyGroup.count(), BASE_X, BASE_Y + 80);
+      ctx.fillText('Enemy: ' + this.game.enemyManager.count(), BASE_X, BASE_Y + 80);
 
       this.drawLives(ctx);
 

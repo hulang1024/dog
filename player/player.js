@@ -47,7 +47,7 @@ export default class Player extends GameObject {
     this.hurtCollisionRect.position.x = this.position.x + 16;
     this.hurtCollisionRect.position.y = this.position.y + 20;
     const enemy = checkCollision(
-      this.hurtCollisionRect, this.game.enemyGroup.children);
+      this.hurtCollisionRect, this.game.enemyManager.children);
     if (enemy) {
       enemy.queueDelete();
       if (this.nowState.id == StateId.Rolling ||

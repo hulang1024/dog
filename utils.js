@@ -23,7 +23,7 @@ export function drawDebugInfo(ctx, game, delta) {
   ctx.fillText('camera.lookAtTarget:     '
     + (camera.lookAtTarget ? camera.lookAtTarget.constructor.name : null), BASE_X, newLine());
   ctx.fillText('object count:   ' + countObject(game), BASE_X, newLine());
-  ctx.fillText('enemy count:    ' + game.enemyGroup.count(), BASE_X, newLine());
+  ctx.fillText('enemy count:    ' + game.enemyManager.count(), BASE_X, newLine());
   ctx.fillText('particle count: ' + game.particleGroup.count(), BASE_X, newLine());
   ctx.fillText('player.velocity:  ' + player.velocity.toString(), BASE_X, newLine());
   ctx.fillText('player.position:  ' + player.position.toString(), BASE_X, newLine());
@@ -48,4 +48,16 @@ function countObject(node) {
     cnt += countObject(child);
   });
   return cnt;
+}
+
+export function parseSearchParams() {
+  if (!location.search) {
+    return {};
+  }
+  const pairs = location.search.substring(1).split('&');
+  return pairs.reduce((obj, pair) => {
+    const [ k, v ] = pair.split('=');
+    obj[k] = v;
+    return obj;
+  }, {});
 }

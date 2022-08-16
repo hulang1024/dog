@@ -1,12 +1,16 @@
 import Game from './game.js';
 import Input from './input.js';
-import { drawDebugInfo } from './utils.js';
+import { initRandomSeed } from './random.js';
+import { drawDebugInfo, parseSearchParams } from './utils.js';
 
 window.addEventListener('load', () => {
   const canvas = document.getElementById('canvas1');
   canvas.width = 900;
   canvas.height = 500;
   const context = canvas.getContext('2d');
+
+  const searchParams = parseSearchParams();
+  initRandomSeed(searchParams.r || new Date().getTime().toString());
 
   const game = new Game(canvas.width, canvas.height);
 
@@ -46,5 +50,9 @@ window.addEventListener('load', () => {
     
     requestAnimationFrame(animate); 
   }
-  animate(0);
+
+  requestAnimationFrame((nowTime) => {
+    lastTime = nowTime;
+    requestAnimationFrame(animate);
+  });
 });

@@ -4,7 +4,7 @@ import Camera from './camera.js';
 import Player from './player/player.js';
 import Input from './input.js';
 import HUD from './hud.js';
-import { EnemiesManager } from './enemies/enemies.js';
+import { EnemyManager } from './enemies/enemies.js';
 
 export default class Game extends GameObject {
   constructor(viewportWidth, viewportHeight) {
@@ -32,10 +32,8 @@ export default class Game extends GameObject {
     this.particleGroup = new Group();
     this.add(this.particleGroup);
 
-    this.enemyGroup = new Group();
-    this.add(this.enemyGroup);
-
-    this.enemiesManager = new EnemiesManager(this);
+    this.enemyManager = new EnemyManager(this);
+    this.add(this.enemyManager);
 
     this.hud = new HUD(this);
     this.add(this.hud);
@@ -47,8 +45,6 @@ export default class Game extends GameObject {
     }
 
     this.time += delta;
-    
-    this.enemiesManager.update(delta);
 
     traverseTrees(this.children, (node) => {
       node.update(delta);
@@ -74,22 +70,20 @@ export default class Game extends GameObject {
     this.lives = 5;
     this.time = 0;
 
-    this.camera.follow(null);
-    this.camera.lookAt(null);
-    this.camera.position.x = 0;
+    this.camera.reset();
 
     this.particleGroup.clear();
-    this.enemyGroup.clear();
-    this.remove(this.player);
+    this.enemyManager.clear();
 
     this.children = this.children.filter((c) => (
       c instanceof Camera ||
       c instanceof Background ||
+      c instanceof HUD ||
       c == this.particleGroup ||
-      c == this.enemyGroup ||
-      c instanceof HUD
+      c == this.enemyManager
     ));
 
+    this.remove(this.player);
     this.player = new Player(this);
     this.add(this.player);
 

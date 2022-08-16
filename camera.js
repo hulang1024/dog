@@ -77,6 +77,13 @@ export default class Camera extends GameObject {
     this.followTarget = target;
   }
 
+  reset() {
+    this.followTarget = null;
+    this.lookAtTarget = null;
+    this.position.x = 0;
+    this.position.y = 0;
+  }
+
   with(ctx, isWith, draw) {
     ctx.save();
     ctx.translate(

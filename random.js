@@ -1,3 +1,14 @@
+let prng;
+
+export function initRandomSeed(seed) {
+  prng = new Math.seedrandom(seed);
+  console.log('random seed=', seed);
+}
+
+export function random() {
+  return prng();
+}
+
 export function randomRange(min, max) {
-  return Math.random() * (max - min) + min;
+  return random() * (max - min) + min;
 }

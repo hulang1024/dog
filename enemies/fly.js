@@ -1,5 +1,5 @@
 import { SpriteAnimation } from "../animation.js";
-import { randomRange } from "../random.js";
+import { random, randomRange } from "../random.js";
 import Enemy from "./enemy.js";
 
 export default class Fly extends Enemy {
@@ -12,7 +12,7 @@ export default class Fly extends Enemy {
     this.speed = randomRange(1, 5) * 62;
     this.flapSpeed = Math.floor(randomRange(1, 4) * 62);
     this.angle = 0;
-    this.angleSpeed = Math.random() * 0.2 * 62;
+    this.angleSpeed = random() * 0.2 * 62;
     this.curve = randomRange(0, 7);
 
     const animation = new SpriteAnimation();
