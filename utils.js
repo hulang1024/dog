@@ -15,7 +15,8 @@ export function drawDebugInfo(ctx, game, delta) {
   if (game.theme == 'forest') {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
   }
-  ctx.fillText('camera.x: ' + camera.position.x.toFixed(2), BASE_X, BASE_Y);
+  ctx.fillText('camera.position: ' + camera.position, BASE_X, BASE_Y);
+  ctx.fillText('camera.offset: ' + camera.offset, BASE_X, newLine());
   ctx.fillText('camera.smoothingEnabled: ' + camera.smoothingEnabled, BASE_X, newLine());
   ctx.fillText('camera.smoothingSpeed:   ' + camera.smoothingSpeed, BASE_X, newLine());
   ctx.fillText('camera.followTarget:     '
@@ -25,8 +26,8 @@ export function drawDebugInfo(ctx, game, delta) {
   ctx.fillText('object count:   ' + countObject(game), BASE_X, newLine());
   ctx.fillText('enemy count:    ' + game.enemyManager.count(), BASE_X, newLine());
   ctx.fillText('particle count: ' + game.particleGroup.count(), BASE_X, newLine());
-  ctx.fillText('player.velocity:  ' + player.velocity.toString(), BASE_X, newLine());
-  ctx.fillText('player.position:  ' + player.position.toString(), BASE_X, newLine());
+  ctx.fillText('player.velocity:  ' + player.velocity, BASE_X, newLine());
+  ctx.fillText('player.position:  ' + player.position, BASE_X, newLine());
   ctx.fillText('player.state:     ' + player.nowState.id, BASE_X, newLine());
 
   y = BASE_Y;

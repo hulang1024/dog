@@ -18,6 +18,10 @@ export default class Vector2 {
     return new Vector2(this.x - other.x, this.y - other.y);
   }
 
+  mul(n) {
+    return new Vector2(this.x * n, this.y * n);
+  }
+
   distance(other) {
     const dx = this.x - other.x;
     const dy = this.y - other.y;

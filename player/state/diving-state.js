@@ -23,6 +23,7 @@ export default class DivingState extends State {
           new SplashParticle(
             this.player.position.x + this.player.width / 2,
             this.player.position.y + this.player.height));
+        this.camera.offset.y = -8;
       }
       if (this.player.velocity.x == 0) {
         this.to(StateId.Sitting);

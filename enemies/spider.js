@@ -10,6 +10,7 @@ export class BaseSpider extends Enemy {
     this.position.y = -this.height + randomRange(0, 10);
     this.silkYOffset = 0;
     this.slikWidth = 1;
+    this.slikColor = '#000';
     this.age = 0;
     this.ageMax = ageMax;
     this.sound = new Sound2D('assets/sounds/spider_chattering.wav', this.game);
@@ -44,10 +45,10 @@ export class BaseSpider extends Enemy {
     super.draw(ctx);
     const cx = this.position.x + this.width / 2;
     ctx.beginPath();
-    ctx.strokeStyle = '#000';
+    ctx.strokeStyle = this.slikColor;
     ctx.lineWidth = this.slikWidth;
     ctx.moveTo(cx, 0);
-    ctx.lineTo(cx, this.position.y + this.silkYOffset);
+    ctx.lineTo(cx, this.position.y + this.height * 0.8);
     ctx.stroke();
   }
 }
@@ -55,11 +56,12 @@ export class BaseSpider extends Enemy {
 export class SmallSpider extends BaseSpider {
   constructor(game) {
     super(game, 2, 3);
-    this.width = 100;
-    this.height = 56;
+    const maxWidth = 110;
+    this.width = randomRange(80, maxWidth);
+    this.height = Math.round(this.width * 0.56);
     this.velocity = new Vector2(0, randomRange(100, 180));
-    this.silkYOffset = 4;
     this.slikWidth = 1;
+    this.slikColor = 'rgba(0, 0, 0, ' + (this.width / maxWidth)  + ')';
     this.sound.volumeFactor = 0.02;
 
     const animation = new SpriteAnimation();
@@ -81,17 +83,18 @@ export class SmallSpider extends BaseSpider {
 export class BigSpider extends BaseSpider {
   constructor(game) {
     super(game, 1, 2);
-    this.width = 120;
-    this.height = 144;
+    const maxWidth = 120;
+    this.width = randomRange(110, maxWidth);
+    this.height = Math.round(this.width * 1.2);
     this.velocity = new Vector2(0, randomRange(30, 160));
-    this.silkYOffset = 44;
     this.slikWidth = 1.5;
+    this.slikColor = 'rgba(0, 0, 0, ' + (this.width / maxWidth)  + ')';
     this.sound.volumeFactor = 0.04;
 
     const animation = new SpriteAnimation();
     animation.image = document.getElementById('enemy-spider-big');
-    animation.spriteWidth = this.width;
-    animation.spriteHeight = this.height;
+    animation.spriteWidth = 120;
+    animation.spriteHeight = 144;
     animation.animations =  {
       move: {
         frameRow: 0,

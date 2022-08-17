@@ -1,10 +1,5 @@
 export function checkCollision(rect, otherRects) {
-  for (let i = 0; i < otherRects.length; i++) {
-    if (isRectCollision(rect, otherRects[i])) {
-      return otherRects[i];
-    }
-  }
-  return null;
+  return otherRects.filter((x) => isRectCollision(rect, x));
 }
 
 function isRectCollision(rect1, rect2) {

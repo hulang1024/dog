@@ -24,8 +24,8 @@ export default class Boom extends GameObject {
       this.queueDelete();
     });
     const sound = new Audio();
-    sound.src = 'assets/effect/boom.wav';
-    sound.volume = 0.1;
+    sound.src = 'assets/sounds/boom.wav';
+    sound.volume = 0.05;
     sound.play();
   }
 }

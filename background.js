@@ -14,11 +14,11 @@ export default class Background extends GameObject {
   }
 }
 
+const offsetY = 8; // 多一些高度，以支持相机晃动效果
+
 class Layer extends GameObject {
   constructor(width, height, image, camera, speedModifier) {
     super();
-    this.offsetX = 0;
-    this.offsetY = 0;
     this.width = width;
     this.height = height;
     this.image = image;
@@ -27,15 +27,20 @@ class Layer extends GameObject {
   }
 
   update() {
-    this.offsetX = -this.camera.position.x * this.speedModifier % this.width;
+    this.position.x = (-this.camera.position.x - this.camera.offset.x)
+      * this.speedModifier % this.width;
   }
 
   draw(ctx) {
     this.camera.with(ctx, false, () => {
-      ctx.drawImage(this.image, this.offsetX, this.offsetY,
-        this.width, this.height);
-      ctx.drawImage(this.image, this.offsetX + this.width, this.offsetY,
-        this.width, this.height);
+      ctx.drawImage(this.image,
+        this.position.x,
+        -this.camera.position.y - this.camera.offset.y - offsetY,
+        this.width, this.height + offsetY);
+      ctx.drawImage(this.image,
+        this.position.x + this.width,
+        -this.camera.position.y - this.camera.offset.y - offsetY,
+        this.width, this.height + offsetY);
     });
   }
 }

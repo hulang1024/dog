@@ -25,18 +25,15 @@ export default class Game extends GameObject {
     this.add(this.camera);
 
     this.background = new Background(this.camera, this.theme);
-    this.add(this.background);
-
     this.player = new Player(this);
-    this.add(this.player);
-
     this.particleGroup = new Group();
-    this.add(this.particleGroup);
-
     this.enemyManager = new EnemyManager(this);
-    this.add(this.enemyManager);
-
     this.hud = new HUD(this);
+
+    this.add(this.background);
+    this.add(this.enemyManager);
+    this.add(this.particleGroup);
+    this.add(this.player);
     this.add(this.hud);
   }
 
@@ -141,6 +138,16 @@ export default class Game extends GameObject {
       case Input.Keys.Num3:
         this.camera.follow(
           this.camera.followTarget == this.player ? null : this.player);
+        break;
+        case Input.Keys.Num7:
+          if (Game.isDebugMode) {
+            this.player.shadow = !this.player.shadow;
+          }
+          break;
+      case Input.Keys.Num8:
+        if (Game.isDebugMode) {
+          this.player.invincible = !this.player.invincible;
+        }
         break;
       case Input.Keys.Num9:
         Game.debugOptions.displaySound2DVolume =

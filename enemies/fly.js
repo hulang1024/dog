@@ -6,8 +6,8 @@ import Enemy from "./enemy.js";
 export default class Fly extends Enemy {
   constructor(game) {
     super(game, 3);
-    this.width = 60;
-    this.height = 44;
+    this.width = randomRange(50, 70);
+    this.height = Math.round(this.width * 0.733);
     this.position.x = game.camera.position.x + game.viewportWidth;
     this.position.y = this.height + randomRange(10, 30);
     this.speed = randomRange(1, 5) * 62;
@@ -18,8 +18,8 @@ export default class Fly extends Enemy {
 
     const animation = new SpriteAnimation();
     animation.image = document.getElementById('enemy-fly');
-    animation.spriteWidth = this.width;
-    animation.spriteHeight = this.height;
+    animation.spriteWidth = 60;
+    animation.spriteHeight = 44;
     animation.intervelFps = 16;
     animation.animations =  {
       fly: {

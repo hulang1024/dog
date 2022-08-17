@@ -20,8 +20,9 @@ export default class Player extends GameObject {
     this.velocity = Vector2.Zero();
     this.weight = 120;
     // 无敌时长（应大于受击或眩晕的动画时长）
-    this.invincibleDuration = 600;
+    this.invincibleDuration = 1800;
     this.invincible = false;
+    this.shadow = false;
 
     this.hurtCollisionRect = {
       position: this.position.clone(),
@@ -45,19 +46,21 @@ export default class Player extends GameObject {
     this.nowState.onUpdate(delta);
 
     this.hurtCollisionRect.position.set(this.position.x + 16, this.position.y + 20);
-    const enemy = checkCollision(
+    const enemies = !this.shadow && checkCollision(
       this.hurtCollisionRect, this.game.enemyManager.children);
-    if (enemy) {
-      enemy.queueDelete();
+    if (enemies.length) {
       if (this.nowState.id == StateId.Rolling ||
           this.nowState.id == StateId.Diving) {
-        this.game.score++;
-        this.game.add(new FloatingText(
-          this.game, '+' + enemy.score, enemy.position,
-          new Vector2(180, 40)));
-        this.game.add(new Boom(
-          enemy.position.x + enemy.width * 0.5,
-          enemy.position.y + enemy.height * 0.5));
+        enemies.forEach((enemy) => {
+          this.game.score++;
+          this.game.add(new FloatingText(
+            this.game, '+' + enemy.score, enemy.position,
+            new Vector2(180, 40)));
+          this.game.add(new Boom(
+            enemy.position.x + enemy.width * 0.5,
+            enemy.position.y + enemy.height * 0.5));
+          enemy.queueDelete();
+        });
       } else if (!this.invincible) {
         if (this.game.lives > 0) {          
           this.game.lives--;

@@ -1,4 +1,5 @@
 import GameObject from "./game-object.js";
+import Vector2 from "./vector.js";
 
 export default class Camera extends GameObject {
   constructor(game) {
@@ -6,7 +7,8 @@ export default class Camera extends GameObject {
     this.width = game.viewportWidth;
     this.game = game;
     this.smoothingEnabled = true;
-    this.smoothingSpeed = 100;
+    this.smoothingSpeed = 62;
+    this.offset = Vector2.Zero();
     this.lookAtTarget = null;
     this.followTarget = null;
   }
@@ -19,6 +21,17 @@ export default class Camera extends GameObject {
   }
 
   update(delta) {
+    if (this.offset.x < 0) {
+      this.offset.x = Math.min(0, this.offset.x + this.smoothingSpeed * delta);
+    } else if (this.offset.x > 0) {
+      this.offset.x = Math.max(0, this.offset.x - this.smoothingSpeed * delta);
+    }
+    if (this.offset.y < 0) {
+      this.offset.y = Math.min(0, this.offset.y + this.smoothingSpeed * delta);
+    } else if (this.offset.y > 0) {
+      this.offset.y = Math.max(0, this.offset.y - this.smoothingSpeed * delta);
+    }
+
     const target = this.lookAtTarget || this.followTarget;
     if (!target) {
       return;
@@ -84,8 +97,8 @@ export default class Camera extends GameObject {
   with(ctx, isWith, draw) {
     ctx.save();
     ctx.translate(
-      (isWith ? -1 : 1) * this.position.x,
-      (isWith ? -1 : 1) * this.position.y);
+      (isWith ? -1 : 1) * (this.position.x + this.offset.x),
+      (isWith ? -1 : 1) * (this.position.y + this.offset.y));
     draw(ctx);
     ctx.restore();
   }
