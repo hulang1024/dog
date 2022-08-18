@@ -18,7 +18,6 @@ export class BaseGetHitState extends State {
     }
     player.invincible = true;
     player.animation.play(this.animationName);
-    this.camera.lookAt(player);
     player.animation.onFinishOnce(() => {
       player.animation.pause();
       if (this.game.lives == 0) {

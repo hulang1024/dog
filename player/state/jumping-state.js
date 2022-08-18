@@ -8,7 +8,6 @@ export default class JumpingState extends State {
   }
 
   onEnter() {
-    this.camera.follow(null);
     this.player.animation.play('jump');
     this.player.velocity.y = -this.maxSpeed;
   }
@@ -20,7 +19,7 @@ export default class JumpingState extends State {
     } else if (Input.isPressed(Input.Keys.Right)) {
       player.velocity.x = 360;
     }
-  
+
     if (!Input.isPressed(Input.Keys.Up)) {
       player.velocity.y += player.weight;
     }

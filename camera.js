@@ -72,7 +72,6 @@ export default class Camera extends GameObject {
     if (target != this.lookAtTarget) {
       console.log('相机看向 ' + target.constructor.name);
     }
-    this.followTarget = null;
     this.lookAtTarget = target;
   }
 

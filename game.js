@@ -35,6 +35,8 @@ export default class Game extends GameObject {
     this.add(this.particleGroup);
     this.add(this.player);
     this.add(this.hud);
+
+    this.camera.follow(this.player);
   }
 
   update(delta) {
@@ -94,6 +96,8 @@ export default class Game extends GameObject {
     this.deleteChild(this.player);
     this.player = new Player(this);
     this.add(this.player);
+
+    this.camera.follow(this.player);
 
     this.isGameOver = false;
   }

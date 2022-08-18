@@ -78,12 +78,6 @@ export default class Player extends GameObject {
       this.position.x = 0;
       this.velocity.x = 0;
     }
-
-    if (!this.game.camera.followTarget &&
-        this.velocity.x == 0 && this.velocity.y == 0 &&
-        this.position.x > this.game.camera.position.x + this.game.camera.width) {
-      this.game.camera.lookAt(this);
-    }
   }
 
   draw(ctx) {

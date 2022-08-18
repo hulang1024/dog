@@ -9,9 +9,9 @@ export default class RunningState extends State {
   }
 
   onEnter(dir) {
+    this.camera.changeSpeed(840);
     dir = dir || Math.sign(this.player.velocity.x) || 1;
     this.camera.changeSpeed(this.runSpeed);
-    this.camera.follow(this.player);
     this.player.animation.play('run');
     this.player.velocity.x = dir * this.runSpeed;
   }
