@@ -10,22 +10,31 @@ export default class Vector2 {
     return this;
   }
 
-  add(other) {
-    return new Vector2(this.x + other.x, this.y + other.y);
+  add(p) {
+    this.x += p.x;
+    this.y += p.y;
   }
 
-  subtract(other) {
-    return new Vector2(this.x - other.x, this.y - other.y);
+  plus(p) {
+    return new Vector2(this.x + p.x, this.y + p.y);
+  }
+
+  subtract(p) {
+    this.x -= p.x;
+    this.y -= p.y;
+  }
+
+  minus(p) {
+    return new Vector2(this.x - p.x, this.y - p.y);
   }
 
   mul(n) {
     return new Vector2(this.x * n, this.y * n);
   }
 
-  distance(other) {
-    const dx = this.x - other.x;
-    const dy = this.y - other.y;
-    return Math.sqrt(dx * dx + dy * dy);
+  distanceTo(to) {
+    return Math.sqrt((this.x - to.x) * (this.x - to.x) +
+                     (this.y - to.y) * (this.y - to.y));
   }
 
   clone() {
@@ -44,6 +53,7 @@ Vector2.Down = () => new Vector2(0, 1);
 Vector2.Left = () => new Vector2(-1, 0);
 
 Vector2.ZERO = Vector2.Zero();
+Vector2.ONE = new Vector2(1, 1);
 Vector2.UP = Vector2.Up();
 Vector2.RIGHT = Vector2.Right();
 Vector2.DOWN = Vector2.Down();

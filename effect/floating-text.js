@@ -4,7 +4,7 @@ export default class FloatingText extends GameObject {
   constructor(game, text, fromPosition, toPosition) {
     super();
     this.text = text;
-    this.position = fromPosition.subtract(game.camera.position);
+    this.position = fromPosition.minus(game.camera.position);
     this.toPosition = toPosition;
     this.timer = 0;
     this.camera = game.camera;

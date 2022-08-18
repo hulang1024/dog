@@ -34,13 +34,13 @@ export class Sound2D extends GameObject {
     this.maxVolume = 1;
     this.volumeFactor = 1;
     this.playing = false;
-    this.maxDistance = Vector2.ZERO.distance(
+    this.maxDistance = Vector2.ZERO.distanceTo(
       new Vector2(this.game.viewportWidth, this.game.viewportHeight));
     sounds.push(this);
   }
 
   update() {
-    const distance = this.parent.position.distance(this.listener.position);
+    const distance = this.parent.position.distanceTo(this.listener.position);
     let volume = (1 - distance / this.maxDistance) * this.volumeFactor;
     volume = Math.min(this.maxVolume, volume);
     volume = Math.max(this.minVolume, volume);

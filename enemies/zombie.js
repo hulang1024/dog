@@ -38,7 +38,7 @@ export default class Zombie extends Enemy {
     const { player } = this;
     if ((player.nowState.id == StateId.Sitting ||
          player.nowState.id == StateId.Standing) &&
-        this.position.distance(player.position) < player.width + 100) {
+        this.position.distanceTo(player.position) < player.width + 100) {
       this.sound.play();
     }
   }
