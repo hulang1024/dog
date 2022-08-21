@@ -1,83 +1,97 @@
-import GameObject, { Group } from './game-object.js';
+import { PauseMode, traverseTrees } from './core/node.js';
+import { Group } from './core/node.js';
 import Background from './background.js';
-import Camera from './camera.js';
+import Camera from './core/camera.js';
 import Player from './player/player.js';
-import Input from './input.js';
-import { pauseAllSounds, resumeAllSounds, Sound2D } from './sound.js';
+import Input from './core/input.js';
+import { pauseAllSounds, resumeAllSounds, Sound2D } from './core/sound.js';
 import HUD from './hud.js';
 import { EnemyManager } from './enemies/enemies.js';
+import CanvasLayer from './core/canvas-layer.js';
+import Viewport from './core/viewport.js';
+import { drawDebugInfo } from './utils.js';
 
-export default class Game extends GameObject {
-  constructor(viewportWidth, viewportHeight) {
-    super();
-    this.viewportWidth = viewportWidth;
-    this.viewportHeight = viewportHeight;
-
-    this.theme = Math.random() > 0.5 ? 'city' : 'forest';
-    this.bottomMargin = {city: 82, forest: 40}[this.theme];
-
+export default class Game extends Viewport {
+  constructor() {
+    super(900, 500);
     this.score = 0;
-    this.lives = 5;
+    this.maxLives = 5;
+    this.lives = this.maxLives;
     this.time = 0;
+    this.isPause = true;
     this.isGameOver = false;
+    this.setPauseMode(PauseMode.Stop);
 
     this.camera = new Camera(this);
     this.add(this.camera);
+    this.camera.setViewport(this);
 
-    this.background = new Background(this.camera, this.theme);
+    this.background = new Background(this);
+    this.add(this.background);
+
     this.player = new Player(this);
     this.particleGroup = new Group();
     this.enemyManager = new EnemyManager(this);
-    this.hud = new HUD(this);
 
-    this.add(this.background);
-    this.add(this.enemyManager);
-    this.add(this.particleGroup);
-    this.add(this.player);
+    this.canvasLayer = new CanvasLayer(this, 0, 'default');
+    this.canvasLayer.add(this.enemyManager);
+    this.canvasLayer.add(this.particleGroup);
+    this.canvasLayer.add(this.player);    
+    this.canvasLayer.followViewportEnable = true;
+    this.add(this.canvasLayer);
+
+    this.hud = new HUD(this, this);
     this.add(this.hud);
 
-    this.camera.follow(this.player);
+    this.debugCanvasLayer = new CanvasLayer(this, 2, 'debug');
+    this.add(this.debugCanvasLayer);
   }
 
   update(delta) {
+    if (Game.isDebugMode && Game.debugOptions.displayStatesInfo) {
+      drawDebugInfo(this, delta);
+    }
+    
     if (this.isGameOver) {
       this.onGameOver();
-      return;
     }
 
-    this.time += delta;
+    if (!this.isPause) {
+      this.time += delta;
+    }
 
     traverseTrees(this.children, (node) => {
-      node.update(delta);
-    });
-
-    traverseTrees(this.children, (node) => {
-      if (node.isQueuedForDelete) {
-        node.parent.deleteChild(node);
+      if (!this.isPause || node.isProcessOnPause()) {
+        node.update(delta);
       }
+      return true;
     });
-  }
-
-  draw(ctx, delta) {
-    this.camera.with(ctx, true, () => {
-      traverseTrees(this.children, (node) => {
-        node.draw(ctx, delta);
-      });
+    traverseTrees(this.children, (node) => {
+      if (node.isQueuedForFree) {
+        node.parent.removeChild(node);
+        return false;
+      }
+      return true;
     });
   }
 
   onGameOver() {
+    if (this.isPause) {
+      return;
+    }
+    this.isPause = true;
     pauseAllSounds();
     traverseTrees(this.children, (node) => {
       if (node instanceof Sound2D) {
-        node.delete();
+        node.exitTree();
       }
+      return true;
     });
   }
 
   restart() {
     this.score = 0;
-    this.lives = 5;
+    this.lives = this.maxLives;
     this.time = 0;
 
     this.camera.reset();
@@ -85,21 +99,12 @@ export default class Game extends GameObject {
     this.particleGroup.clear();
     this.enemyManager.clear();
 
-    this.children = this.children.filter((c) => (
-      c instanceof Camera ||
-      c instanceof Background ||
-      c instanceof HUD ||
-      c == this.particleGroup ||
-      c == this.enemyManager
-    ));
-
-    this.deleteChild(this.player);
+    this.canvasLayer.removeChild(this.player);
     this.player = new Player(this);
-    this.add(this.player);
-
-    this.camera.follow(this.player);
+    this.canvasLayer.add(this.player);
 
     this.isGameOver = false;
+    this.isPause = false;
   }
 
   onKeyPressed(key) {
@@ -109,8 +114,8 @@ export default class Game extends GameObject {
         if (this.isGameOver) {
           this.restart();
         } else {
-          Game.isPause = !Game.isPause;
-          if (Game.isPause) {
+          this.isPause = !this.isPause;
+          if (this.isPause) {
             pauseAllSounds();
           } else {
             resumeAllSounds();
@@ -161,17 +166,9 @@ export default class Game extends GameObject {
   }
 }
 
-function traverseTrees(nodes, visit) {
-  nodes.forEach((node) => {
-    visit(node);
-    traverseTrees(node.children, visit);
-  });
-}
-
 Game.isDebugMode = true;
 Game.debugOptions = {
   displayStatesInfo: false,
   enableBox: false,
   displaySound2DVolume: false
 };
-Game.isPause = true;

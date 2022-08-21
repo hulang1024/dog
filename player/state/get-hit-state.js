@@ -1,4 +1,4 @@
-import Input from '../../input.js';
+import Input from '../../core/input.js';
 import { State, StateId } from './state.js';
 
 export class BaseGetHitState extends State {
@@ -18,6 +18,7 @@ export class BaseGetHitState extends State {
     }
     player.invincible = true;
     player.animation.play(this.animationName);
+    this.camera.lookAt(player);
     player.animation.onFinishOnce(() => {
       player.animation.pause();
       if (this.game.lives == 0) {

@@ -1,9 +1,15 @@
+import { Group, PauseMode } from '../core/node.js';
 import { SmallSpider, BigSpider } from './spider.js';
 import Fly from './fly.js';
 import Plant from './plant.js';
 import Zombie from './zombie.js';
-import { random, randomRange } from '../random.js';
-import { Group } from '../game-object.js';
+import Worm from './worm.js';
+import Hand from './hand.js';
+import { Bat1, Bat2 } from './bat.js';
+import Bat3 from './bat3.js';
+import Ghost1 from './ghost1.js';
+import Razor from './Razor.js';
+import { random, randomRange } from '../core/random.js';
 
 export class EnemyManager extends Group {
   constructor(game) {
@@ -13,15 +19,9 @@ export class EnemyManager extends Group {
     this.camera = game.camera;
   }
 
-  update(delta) {
-    this.children.forEach((enemy) => {
-      if (enemy.position.x - this.camera.position.x < -enemy.width) {
-        enemy.queueDelete();
-      }
-    });
-
-    for (let count = 6 - this.count(); count > 0; count--) {
-      const rv = Math.floor(randomRange(1, 5));
+  update() {
+    for (let count = 11 - this.count(); count > 0; count--) {
+      const rv = Math.floor(randomRange(1, 11));
       let enemy;
       if (rv == 1) {
         enemy = random() > 0.5
@@ -33,7 +33,7 @@ export class EnemyManager extends Group {
         } else {
           enemy.position.x = randomRange(
             this.player.position.x,
-            this.camera.position.x + this.game.viewportWidth);
+            this.camera.position.x + this.game.width);
         }
       } else if (rv == 2) {
         enemy = new Fly(this.game);
@@ -41,6 +41,22 @@ export class EnemyManager extends Group {
         enemy = new Plant(this.game);
       } else if (rv == 4) {
         enemy = new Zombie(this.game);
+      } else if (rv == 5) {
+        enemy = new Worm(this.game);
+      } else if (rv == 5) {
+        enemy = new Worm(this.game);
+      } else if (rv == 6) {
+        enemy = random() > 0.5
+          ? new Bat1(this.game)
+          : new Bat2(this.game)
+      } else if (rv == 7) {
+        enemy = new Bat3(this.game)
+      } else if (rv == 8) {
+        enemy = new Ghost1(this.game)
+      } else if (rv == 9) {
+        enemy = new Razor(this.game)
+      } else {
+        enemy = new Hand(this.game);
       }
       this.add(enemy);
     }

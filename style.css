@@ -23,7 +23,7 @@ body {
   font-size: 30px;
 }
 
-#canvas1 {
+canvas {
   position: absolute;
   left: 50%;
   top: 50%;

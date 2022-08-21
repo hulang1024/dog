@@ -1,22 +1,25 @@
 import Game from '../game.js';
-import GameObject from '../game-object.js';
-import Vector2 from '../vector.js';
+import Node2D from '../core/node2d.js';
+import Vector2 from '../core/vector.js';
 import { setupStateTable } from './state/state-table.js';
 import { StateId, getState } from './state/state.js';
 import { SpriteAnimation } from '../animation.js';
-import { checkCollision } from '../collision.js';
+import { checkCollision } from '../core/collision.js';
 import Boom from '../effect/boom.js';
 import FloatingText from '../effect/floating-text.js';
+import ImageUtils from '../core/image-utils.js';
+import { PauseMode } from '../core/node.js';
 
-export default class Player extends GameObject {
+export default class Player extends Node2D {
   constructor(game) {
     super();
+    this.setPauseMode(PauseMode.Stop);
     this.game = game;
     this.context = game.context;
     this.width = 100;
     this.height = 91.3;
     this.position.x = 0
-    this.position.y = this.game.viewportHeight - this.height - this.game.bottomMargin;
+    this.position.y = this.game.height - this.height - this.game.background.bottomMargin;
     this.velocity = Vector2.Zero();
     this.weight = 120;
     // 无敌时长（应大于受击或眩晕的动画时长）
@@ -30,8 +33,8 @@ export default class Player extends GameObject {
       height: this.height - 20,
     };
     
-    this.animation = new SpriteAnimation();
-    this.animation.image = document.getElementById('player-black');
+    this.animation = new SpriteAnimation('player_black');
+    this.animation.spriteSheetImage = ImageUtils.getImage('player-black');
     this.animation.spriteWidth = 100;
     this.animation.spriteHeight = 91.3;
     this.animation.animations = playerAnimations;
@@ -52,14 +55,18 @@ export default class Player extends GameObject {
       if (this.nowState.id == StateId.Rolling ||
           this.nowState.id == StateId.Diving) {
         enemies.forEach((enemy) => {
+          if (!enemy.getTransform()) {
+            return;
+          }
           this.game.score++;
-          this.game.add(new FloatingText(
-            this.game, '+' + enemy.score, enemy.position,
-            new Vector2(180, 40)));
-          this.game.add(new Boom(
+          const enemyScreenPos = enemy.position.plus(enemy.getTransform());
+          this.game.hud.add(new FloatingText(
+            '+' + enemy.score, 26, enemyScreenPos, new Vector2(180, 40)));
+          
+          this.game.canvasLayer.add(new Boom(
             enemy.position.x + enemy.width * 0.5,
             enemy.position.y + enemy.height * 0.5));
-          enemy.queueDelete();
+          enemy.queueFree();
         });
       } else if (!this.invincible) {
         if (this.game.lives > 0) {          
@@ -78,16 +85,21 @@ export default class Player extends GameObject {
       this.position.x = 0;
       this.velocity.x = 0;
     }
+
+    if (!this.game.camera.followTarget &&
+        this.velocity.x == 0 && this.velocity.y == 0 &&
+        this.position.x > this.game.camera.position.x + this.game.camera.width) {
+      this.game.camera.lookAt(this);
+    }
   }
 
-  draw(ctx) {
-    super.draw(ctx);
+  draw() {
+    super.draw();
     if (Game.isDebugMode && Game.debugOptions.enableBox) {
-      ctx.strokeStyle = '#ff0000';
-      ctx.strokeRect(
+      this.drawRect(
         this.hurtCollisionRect.position.x,
         this.hurtCollisionRect.position.y,
-        this.hurtCollisionRect.width, this.hurtCollisionRect.height);
+        this.hurtCollisionRect.width, this.hurtCollisionRect.height, '#ff0000');
     }
   }
 
@@ -96,23 +108,25 @@ export default class Player extends GameObject {
       this.velocity.y = this.velocity.y + this.weight;
     } else {
       this.velocity.y = 0;
-      this.position.y = this.game.viewportHeight - this.height - this.game.bottomMargin;
+      this.position.y = this.game.height - this.height - this.game.background.bottomMargin;
     }
   }
 
   onKeyPressed(key) {
-    super.onKeyPressed(key);
-    this.nowState.onKeyPressed(key);
+    if (!this.game.isPause) {
+      this.nowState.onKeyPressed(key);
+    }
   }
 
   onKeyReleased(key) {
-    super.onKeyReleased(key);
-    this.nowState.onKeyReleased(key);
+    if (!this.game.isPause) {
+      this.nowState.onKeyReleased(key);
+    }
   }
 
   isOnFloor() {
     return this.position.y >=
-      this.game.viewportHeight - this.height - this.game.bottomMargin;
+      this.game.height - this.height - this.game.background.bottomMargin;
   }
 }
 

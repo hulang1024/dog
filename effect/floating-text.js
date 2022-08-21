@@ -1,33 +1,32 @@
-import GameObject from '../game-object.js';
+import { PauseMode } from '../core/node.js';
+import Node2D from '../core/node2d.js';
 
-export default class FloatingText extends GameObject {
-  constructor(game, text, fromPosition, toPosition) {
+export default class FloatingText extends Node2D {
+  constructor(text, fontSize, fromPosition, toPosition) {
     super();
+    this.setPauseMode(PauseMode.Stop);
     this.text = text;
-    this.position = fromPosition.minus(game.camera.position);
+    this.fontSize = fontSize;
+    this.position = fromPosition;
     this.toPosition = toPosition;
+    this.speed = 0.03 * 62;
     this.timer = 0;
-    this.camera = game.camera;
   }
 
-  update() {
-    this.position.x += (this.toPosition.x - this.position.x) * 0.03;
-    this.position.y += (this.toPosition.y - this.position.y) * 0.03;
+  update(delta) {
+    this.position.x += (this.toPosition.x - this.position.x) * this.speed * delta;
+    this.position.y += (this.toPosition.y - this.position.y) * this.speed * delta;
     this.timer++;
     if (this.timer > 100) {
-      this.queueDelete();
+      this.queueFree();
     }
   }
 
-  draw(ctx) {
-    this.camera.with(ctx, false, () => {
-      ctx.shadowOffsetX = 2;
-      ctx.shadowOffsetY = 2;
-      ctx.shadowColor = '#fff';
-      ctx.shadowBlur = 0;
-      ctx.font = '24px Creepster';
-      ctx.fillStyle = '#000';
-      ctx.fillText(this.text, this.position.x, this.position.y);
-    });
+  draw() {
+    super.draw();
+    this.context2d.save();
+    this.context2d.font = this.fontSize + 'px Creepster';
+    this.context2d.fillText(this.text, this.position.x, this.position.y);
+    this.context2d.restore();
   }
 }

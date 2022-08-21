@@ -1,5 +1,5 @@
-import Input from '../../input.js';
-import { randomRange } from '../../random.js';
+import Input from '../../core/input.js';
+import { randomRange } from '../../core/random.js';
 import { State, StateId } from './state.js';
 
 export default class StandingState extends State {

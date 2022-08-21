@@ -1,4 +1,4 @@
-import Input from '../../input.js';
+import Input from '../../core/input.js';
 import { State, StateId } from './state.js';
 
 export default class SittingState extends State {

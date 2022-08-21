@@ -1,4 +1,4 @@
-import Input from '../../input.js';
+import Input from '../../core/input.js';
 import { FireParticlesManager } from '../../effect/particle.js';
 import { State, StateId } from './state.js';
 
@@ -12,6 +12,7 @@ export default class RollingState extends State {
 
   onEnter() {
     this.camera.changeSpeed(this.hMaxSpeed);
+    this.camera.follow(this.player);
     this.player.velocity.x = Math.sign(this.player.velocity.x || 1) * this.hMaxSpeed;
     this.player.animation.play('roll');
     this.fireParticlesManager.reset();

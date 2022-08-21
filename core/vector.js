@@ -41,6 +41,10 @@ export default class Vector2 {
     return new Vector2(this.x, this.y);
   }
 
+  equals(p) {
+    return this.x == p.x && this.y == p.y;
+  }
+
   toString() {
     return '(' + this.x.toFixed(2) + ',' + this.y.toFixed(2) + ')';
   }

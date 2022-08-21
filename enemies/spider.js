@@ -1,7 +1,8 @@
 import { SpriteAnimation } from "../animation.js";
-import { Sound2D } from "../sound.js";
-import Vector2 from "../vector.js";
-import { randomRange } from "../random.js";
+import ImageUtils from "../core/image-utils.js";
+import { Sound2D } from "../core/sound.js";
+import Vector2 from "../core/vector.js";
+import { randomRange } from "../core/random.js";
 import Enemy from "./enemy.js";
 
 export class BaseSpider extends Enemy {
@@ -24,7 +25,7 @@ export class BaseSpider extends Enemy {
 
     this.position.y += this.velocity.y * delta;
     if (this.velocity.y > 0) {
-      const bottom = this.game.viewportHeight - this.game.bottomMargin - 4;
+      const bottom = this.game.height - this.game.background.bottomMargin - 4;
       if (this.position.y + this.height > bottom) {
         this.position.y = bottom - this.height;
         this.velocity.y = -this.velocity.y;
@@ -35,21 +36,19 @@ export class BaseSpider extends Enemy {
         this.velocity.y = -this.velocity.y;
         this.age++;
         if (this.age >= this.ageMax) {
-          this.queueDelete();
+          this.queueFree();
         }
       }
     }
   }
 
-  draw(ctx) {
-    super.draw(ctx);
+  draw() {
+    super.draw();
     const cx = this.position.x + this.width / 2;
-    ctx.beginPath();
-    ctx.strokeStyle = this.slikColor;
-    ctx.lineWidth = this.slikWidth;
-    ctx.moveTo(cx, 0);
-    ctx.lineTo(cx, this.position.y + this.height * 0.8);
-    ctx.stroke();
+    this.drawLine(
+      new Vector2(cx, 0),
+      new Vector2(cx, this.position.y + this.height * 0.8),
+      this.slikColor, this.slikWidth);
   }
 }
 
@@ -64,8 +63,8 @@ export class SmallSpider extends BaseSpider {
     this.slikColor = 'rgba(0, 0, 0, ' + (this.width / maxWidth)  + ')';
     this.sound.volumeFactor = 0.02;
 
-    const animation = new SpriteAnimation();
-    animation.image = document.getElementById('enemy-spider');
+    const animation = new SpriteAnimation('spider');
+    animation.spriteSheetImage = ImageUtils.getImage('enemy-spider');
     animation.spriteWidth = 310;
     animation.spriteHeight = 175;
     animation.animations =  {
@@ -91,17 +90,17 @@ export class BigSpider extends BaseSpider {
     this.slikColor = 'rgba(0, 0, 0, ' + (this.width / maxWidth)  + ')';
     this.sound.volumeFactor = 0.04;
 
-    const animation = new SpriteAnimation();
-    animation.image = document.getElementById('enemy-spider-big');
+    const animation = new SpriteAnimation('spider_big');
+    animation.spriteSheetImage = ImageUtils.getImage('enemy-spider-big');
     animation.spriteWidth = 120;
     animation.spriteHeight = 144;
-    animation.animations =  {
+    animation.animations = {
       move: {
         frameRow: 0,
         frameLength: 6,
       }
     };
-    animation.intervelFps = 16;
+    animation.fps = 16;
     this.add(animation);
 
     animation.play('move');

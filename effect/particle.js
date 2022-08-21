@@ -1,10 +1,13 @@
-import GameObject from "../game-object.js";
-import { randomRange } from "../random.js";
-import Vector2 from "../vector.js";
+import Node2D from "../core/node2d.js";
+import { randomRange } from "../core/random.js";
+import Vector2 from "../core/vector.js";
+import ImageUtils from "../core/image-utils.js";
+import { PauseMode } from "../core/node.js";
 
-export class Particle extends GameObject {
+export class Particle extends Node2D {
   constructor() {
     super();
+    this.setPauseMode(PauseMode.Stop);
     this.velocity = null;
   }
 
@@ -27,16 +30,14 @@ export class DustParticle extends Particle {
 
     this.size *= 0.95;
     if (this.size < 0.5) {
-      this.queueDelete();
+      this.queueFree();
     }
   }
 
-  draw(ctx) {
-    super.draw(ctx);
-    ctx.beginPath();
-    ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(10, 10, 10, 0.3)';
-    ctx.fill();
+  draw() {
+    super.draw();
+    this.drawArc(this.position,
+      this.size, 0, Math.PI * 2, 'rgba(10, 10, 10, 0.3)');
   }
 }
 
@@ -45,8 +46,8 @@ export class FireParticle extends Particle {
     super();
     this.position.set(x, y);
     this.velocity = new Vector2(-1 * 62, -1 * 62);
-    this.size = randomRange(90, 120);
-    this.image = document.getElementById('fire');
+    this.size = randomRange(90, 100);
+    this.image = ImageUtils.cached('fire', ImageUtils.getImage('fire'), 100, 90);
     this.va = randomRange(-1, 1) * 62;
     this.angle = 0;
   }
@@ -57,17 +58,19 @@ export class FireParticle extends Particle {
     this.position.x += Math.sin(this.angle * (310 * delta));
     this.size *= 0.95;
     if (this.size < 0.5) {
-      this.queueDelete();
+      this.queueFree();
     }
   }
 
-  draw(ctx) {
-    super.draw(ctx);
-    ctx.save();
-    ctx.translate(this.position.x, this.position.y);
-    ctx.rotate(this.angle);
-    ctx.drawImage(this.image, -this.size * 0.5, -this.size * 0.5, this.size, this.size);
-    ctx.restore();
+  draw() {
+    super.draw();
+    // tood: 不用translate
+    this.context2d.save();
+    const transform = this.getTransform();
+    this.context2d.translate(this.position.x + transform.x, this.position.y + transform.y);
+    this.context2d.rotate(this.angle);
+    this.context2d.drawImage(this.image, -this.size * 0.5, -this.size * 0.5, this.size, this.size);
+    this.context2d.restore();
   }
 }
 
@@ -78,7 +81,7 @@ export class SplashParticle extends Particle {
     this.position.x = x - this.size * 0.4;
     this.position.y = y - this.size * 0.5;
     this.velocity = new Vector2(randomRange(-4, 4) * 62, -randomRange(1, 3) * 62);
-    this.image = document.getElementById('fire');
+    this.image = ImageUtils.getImage('fire');
     this.gravity = 0;
   }
 
@@ -88,13 +91,13 @@ export class SplashParticle extends Particle {
     this.position.y += this.gravity;
     this.size *= 0.95;
     if (this.size < 0.5) {
-      this.queueDelete();
+      this.queueFree();
     }
   }
 
-  draw(ctx) {
-    super.draw(ctx);
-    ctx.drawImage(this.image, this.position.x, this.position.y, this.size, this.size);
+  draw() {
+    super.draw();
+    this.drawImage(this.image, this.position.x, this.position.y, this.size, this.size);
   }
 }
 

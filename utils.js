@@ -1,46 +1,44 @@
-import Enemy from "./enemies/enemy.js";
-import { Particle } from './effect/particle.js';
-import Input from "./input.js";
+import Input from "./core/input.js";
 
 const BASE_X = 160;
 const BASE_Y = 28;
 
-export function drawDebugInfo(ctx, game, delta) {
+export function drawDebugInfo(game, delta) {
   const { player, camera } = game;
   let y = BASE_Y;
   let newLine = () => y += 20;
 
-  ctx.save();
-  ctx.font = '14px monospace';
-  if (game.theme == 'forest') {
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+  const context2d = game.debugCanvasLayer.context2d;
+  context2d.clearRect(BASE_X - 4, BASE_Y - 20, 300, 250);
+  context2d.font = '14px monospace';
+  if (game.background.theme == 'forest') {
+    context2d.fillStyle = 'rgba(255, 255, 255, 0.6)';
   }
-  ctx.fillText('camera.position: ' + camera.position, BASE_X, BASE_Y);
-  ctx.fillText('camera.offset: ' + camera.offset, BASE_X, newLine());
-  ctx.fillText('camera.smoothingEnabled: ' + camera.smoothingEnabled, BASE_X, newLine());
-  ctx.fillText('camera.smoothingSpeed:   ' + camera.smoothingSpeed, BASE_X, newLine());
-  ctx.fillText('camera.followTarget:     '
+  context2d.fillText('camera.position: ' + camera.position, BASE_X, BASE_Y);
+  context2d.fillText('camera.offset: ' + camera.offset, BASE_X, newLine());
+  context2d.fillText('camera.smoothingEnabled: ' + camera.smoothingEnabled, BASE_X, newLine());
+  context2d.fillText('camera.smoothingSpeed:   ' + camera.smoothingSpeed, BASE_X, newLine());
+  context2d.fillText('camera.followTarget:     '
     + (camera.followTarget ? camera.followTarget.constructor.name : null), BASE_X, newLine());
-  ctx.fillText('camera.lookAtTarget:     '
+  context2d.fillText('camera.lookAtTarget:     '
     + (camera.lookAtTarget ? camera.lookAtTarget.constructor.name : null), BASE_X, newLine());
-  ctx.fillText('object count:   ' + countObject(game), BASE_X, newLine());
-  ctx.fillText('enemy count:    ' + game.enemyManager.count(), BASE_X, newLine());
-  ctx.fillText('particle count: ' + game.particleGroup.count(), BASE_X, newLine());
-  ctx.fillText('player.velocity:  ' + player.velocity, BASE_X, newLine());
-  ctx.fillText('player.position:  ' + player.position, BASE_X, newLine());
-  ctx.fillText('player.state:     ' + player.nowState.id, BASE_X, newLine());
+  context2d.fillText('object count:   ' + countObject(game), BASE_X, newLine());
+  context2d.fillText('enemy count:    ' + game.enemyManager.count(), BASE_X, newLine());
+  context2d.fillText('particle count: ' + game.particleGroup.count(), BASE_X, newLine());
+  context2d.fillText('player.velocity:  ' + player.velocity, BASE_X, newLine());
+  context2d.fillText('player.position:  ' + player.position, BASE_X, newLine());
+  context2d.fillText('player.state:     ' + player.nowState.id, BASE_X, newLine());
 
+  context2d.clearRect(game.width - 168, BASE_Y - 20, 300, 160);
   y = BASE_Y;
   const fps = Math.round(1 / delta);
-  ctx.fillText('FPS:   ' + fps, game.viewportWidth - 128, BASE_Y);
-  ctx.fillText('Delta: ' + delta.toFixed(6), game.viewportWidth - 128, newLine());
+  context2d.fillText('FPS:   ' + fps, game.width - 128, BASE_Y);
+  context2d.fillText('Delta: ' + delta.toFixed(6), game.width - 128, newLine());
 
-  ctx.fillText('Input.pressedKeys:', game.viewportWidth - 158, newLine());
+  context2d.fillText('Input.pressedKeys:', game.width - 158, newLine());
   Input.getPressedKeys().forEach((key) => {
-    ctx.fillText(key, game.viewportWidth - 70, newLine());
+    context2d.fillText(key, game.width - 70, newLine());
   });
-
-  ctx.restore();
 }
 
 function countObject(node) {

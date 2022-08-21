@@ -1,6 +1,7 @@
 import { SpriteAnimation } from "../animation.js";
-import { Sound2D } from "../sound.js";
-import { random, randomRange } from "../random.js";
+import ImageUtils from "../core/image-utils.js";
+import { Sound2D } from "../core/sound.js";
+import { random, randomRange } from "../core/random.js";
 import Enemy from "./enemy.js";
 
 export default class Fly extends Enemy {
@@ -8,19 +9,18 @@ export default class Fly extends Enemy {
     super(game, 3);
     this.width = randomRange(50, 70);
     this.height = Math.round(this.width * 0.733);
-    this.position.x = game.camera.position.x + game.viewportWidth;
+    this.position.x = game.camera.position.x + game.width;
     this.position.y = this.height + randomRange(10, 30);
     this.speed = randomRange(1, 5) * 62;
-    this.flapSpeed = Math.floor(randomRange(1, 4) * 62);
     this.angle = 0;
     this.angleSpeed = random() * 0.2 * 62;
     this.curve = randomRange(0, 2);
 
-    const animation = new SpriteAnimation();
-    animation.image = document.getElementById('enemy-fly');
+    const animation = new SpriteAnimation('fly');
+    animation.spriteSheetImage = ImageUtils.getImage('enemy-fly');
     animation.spriteWidth = 60;
     animation.spriteHeight = 44;
-    animation.intervelFps = 16;
+    animation.fps = 16;
     animation.animations =  {
       fly: {
         frameRow: 0,

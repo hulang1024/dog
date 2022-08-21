@@ -1,16 +1,20 @@
-import GameObject from "./game-object.js";
+import Node2D from "./node2d.js";
 import Vector2 from "./vector.js";
 
-export default class Camera extends GameObject {
-  constructor(game) {
+export default class Camera extends Node2D {
+  constructor() {
     super();
-    this.width = game.viewportWidth;
-    this.game = game;
+    this.viewport = null;
     this.smoothingEnabled = true;
     this.smoothingSpeed = 62;
     this.offset = Vector2.Zero();
     this.lookAtTarget = null;
     this.followTarget = null;
+  }
+
+  setViewport(viewport) {
+    this.viewport = viewport;
+    this.width = viewport.width;
   }
 
   changeSpeed(val) {
@@ -21,6 +25,11 @@ export default class Camera extends GameObject {
   }
 
   update(delta) {
+    if (this.viewport) {
+      this.viewport.canvasTransform.x = -1 * (this.position.x + this.offset.x);
+      this.viewport.canvasTransform.y = -1 * (this.position.y + this.offset.y);
+    }
+
     if (this.offset.x < 0) {
       this.offset.x = Math.min(0, this.offset.x + this.smoothingSpeed * delta);
     } else if (this.offset.x > 0) {
@@ -72,6 +81,7 @@ export default class Camera extends GameObject {
     if (target != this.lookAtTarget) {
       console.log('相机看向 ' + target.constructor.name);
     }
+    this.followTarget = null;
     this.lookAtTarget = target;
   }
 
@@ -91,14 +101,5 @@ export default class Camera extends GameObject {
     this.followTarget = null;
     this.lookAtTarget = null;
     this.position.set(0, 0);
-  }
-
-  with(ctx, isWith, draw) {
-    ctx.save();
-    ctx.translate(
-      (isWith ? -1 : 1) * (this.position.x + this.offset.x),
-      (isWith ? -1 : 1) * (this.position.y + this.offset.y));
-    draw(ctx);
-    ctx.restore();
   }
 }
