@@ -51,13 +51,14 @@ export default class Vector2 {
 }
 
 Vector2.Zero = () => new Vector2(0, 0);
+Vector2.One = () => new Vector2(1, 1);
 Vector2.Up = () => new Vector2(0, -1);
 Vector2.Right = () => new Vector2(1, 0);
 Vector2.Down = () => new Vector2(0, 1);
 Vector2.Left = () => new Vector2(-1, 0);
 
 Vector2.ZERO = Vector2.Zero();
-Vector2.ONE = new Vector2(1, 1);
+Vector2.ONE = Vector2.One();
 Vector2.UP = Vector2.Up();
 Vector2.RIGHT = Vector2.Right();
 Vector2.DOWN = Vector2.Down();

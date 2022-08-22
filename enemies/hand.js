@@ -9,8 +9,10 @@ export default class Hand extends Enemy {
     this.width = 56
     this.height = 80;
     this.position.x = game.camera.position.x + game.width;
-    this.position.y = game.height - this.height - game.background.bottomMargin;
-  
+    this.position.y = game.background.floorY - this.height;
+  }
+
+  enterTree() {
     const animation = new SpriteAnimation('hand');
     animation.spriteSheetImage = ImageUtils.getImage('enemy-hand');
     animation.spriteWidth = 56;

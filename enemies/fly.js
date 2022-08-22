@@ -15,7 +15,9 @@ export default class Fly extends Enemy {
     this.angle = 0;
     this.angleSpeed = random() * 0.2 * 62;
     this.curve = randomRange(0, 2);
+  }
 
+  enterTree() {
     const animation = new SpriteAnimation('fly');
     animation.spriteSheetImage = ImageUtils.getImage('enemy-fly');
     animation.spriteWidth = 60;

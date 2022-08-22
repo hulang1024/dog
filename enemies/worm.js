@@ -9,9 +9,11 @@ export default class Worm extends Enemy {
     this.width = randomRange(50, 70);
     this.height = Math.round(this.width * 0.75);
     this.position.x = game.camera.position.x + game.width;
-    this.position.y = game.height - game.background.bottomMargin - this.height;
+    this.position.y = game.background.floorY - this.height;
     this.speed = randomRange(1, 3) * 20;
+  }
 
+  enterTree() {
     const animation = new SpriteAnimation('worm');
     animation.spriteSheetImage = ImageUtils.getImage('enemy-worm');
     animation.spriteWidth = 80;

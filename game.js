@@ -1,7 +1,7 @@
 import { PauseMode, traverseTrees } from './core/node.js';
 import { Group } from './core/node.js';
 import Background from './background.js';
-import Camera from './core/camera.js';
+import Camera2D from './core/camera2d.js';
 import Player from './player/player.js';
 import Input from './core/input.js';
 import { pauseAllSounds, resumeAllSounds, Sound2D } from './core/sound.js';
@@ -9,7 +9,8 @@ import HUD from './hud.js';
 import { EnemyManager } from './enemies/enemies.js';
 import CanvasLayer from './core/canvas-layer.js';
 import Viewport from './core/viewport.js';
-import { drawDebugInfo } from './utils.js';
+import { DebugInfoLayer } from './utils.js';
+import CanvasItem from './core/canvas-item.js';
 
 export default class Game extends Viewport {
   constructor() {
@@ -22,7 +23,17 @@ export default class Game extends Viewport {
     this.isGameOver = false;
     this.setPauseMode(PauseMode.Stop);
 
-    this.camera = new Camera(this);
+    this.root = this;
+
+    // (当前场景的)所有节点
+    this.nodes  = [];
+    // (当前场景的)所有CanvasLayer
+    this.canvasLayers = [];
+
+    this.canvasLayer = new CanvasLayer(this, 0, 'default');
+    this.add(this.canvasLayer);
+
+    this.camera = new Camera2D(this);
     this.add(this.camera);
     this.camera.setViewport(this);
 
@@ -33,25 +44,40 @@ export default class Game extends Viewport {
     this.particleGroup = new Group();
     this.enemyManager = new EnemyManager(this);
 
-    this.canvasLayer = new CanvasLayer(this, 0, 'default');
     this.canvasLayer.add(this.enemyManager);
     this.canvasLayer.add(this.particleGroup);
     this.canvasLayer.add(this.player);    
     this.canvasLayer.followViewportEnable = true;
-    this.add(this.canvasLayer);
 
     this.hud = new HUD(this, this);
     this.add(this.hud);
+  }
 
-    this.debugCanvasLayer = new CanvasLayer(this, 2, 'debug');
-    this.add(this.debugCanvasLayer);
+  addNode(node) {
+    this.nodes.push(node);
+  
+    if (node instanceof CanvasLayer) {
+      this.canvasLayers.push(node);
+    } else {
+      // 为直接或间接子级的CanvasItem保存最近的CanvasLayer
+      if (!node.canvasLayer) {
+        let parent = node.parent;
+        if (parent instanceof CanvasLayer) {
+          node.canvasLayer = parent;
+        } else {
+          node.canvasLayer = parent.canvasLayer;
+        }
+      }
+      if (node instanceof CanvasItem) {
+        const canvasLayer = node.canvasLayer;
+        canvasLayer.canvasItems.push(node);
+        node.transform = canvasLayer.viewport.canvasTransform;
+        node.context2d = canvasLayer.context2d;
+      }
+    }
   }
 
   update(delta) {
-    if (Game.isDebugMode && Game.debugOptions.displayStatesInfo) {
-      drawDebugInfo(this, delta);
-    }
-    
     if (this.isGameOver) {
       this.onGameOver();
     }
@@ -60,19 +86,24 @@ export default class Game extends Viewport {
       this.time += delta;
     }
 
-    traverseTrees(this.children, (node) => {
+    this.nodes.forEach((node) => {
       if (!this.isPause || node.isProcessOnPause()) {
         node.update(delta);
       }
-      return true;
     });
-    traverseTrees(this.children, (node) => {
+
+    let removeCnt = 0, node;
+    for (let i = 0, len = this.nodes.length; i < len; i++) {
+      node = this.nodes[i];
       if (node.isQueuedForFree) {
         node.parent.removeChild(node);
-        return false;
+        node.exitTree();
+        removeCnt++;
       }
-      return true;
-    });
+    }
+    if (removeCnt > 0) {
+      this.nodes = this.nodes.filter((node) => !node.isQueuedForFree);
+    }
   }
 
   onGameOver() {
@@ -83,7 +114,7 @@ export default class Game extends Viewport {
     pauseAllSounds();
     traverseTrees(this.children, (node) => {
       if (node instanceof Sound2D) {
-        node.exitTree();
+        node.queueFree();
       }
       return true;
     });
@@ -124,6 +155,7 @@ export default class Game extends Viewport {
         break;
       case Input.Keys.D:
         Game.isDebugMode = !Game.isDebugMode;
+        this._toggleDebugInfoLayer();
         break;
       case Input.Keys.B:
         Game.debugOptions.enableBox = !Game.debugOptions.enableBox;
@@ -131,6 +163,7 @@ export default class Game extends Viewport {
       case Input.Keys.I:
         Game.debugOptions.displayStatesInfo =
           !Game.debugOptions.displayStatesInfo;
+        this._toggleDebugInfoLayer();
         break;
       case Input.Keys.P:
         this.camera.position.x += 10;
@@ -162,6 +195,15 @@ export default class Game extends Viewport {
         Game.debugOptions.displaySound2DVolume =
           !Game.debugOptions.displaySound2DVolume;
         break;
+    }
+  }
+
+  _toggleDebugInfoLayer() {
+    if (Game.isDebugMode && Game.debugOptions.displayStatesInfo) {
+      this.debugInfoLayer = new DebugInfoLayer(this, this);
+      this.add(this.debugInfoLayer);
+    } else {
+      this.removeChild(this.debugInfoLayer);
     }
   }
 }

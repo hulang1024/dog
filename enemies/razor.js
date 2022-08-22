@@ -14,8 +14,11 @@ export default class Razor extends Enemy {
     this.newPos = null;
     this.intervel = randomRange(3, 5);
     this.timer = this.intervel + 1;
-    this.speed = 70;
+    this.maxSpeed = 71;
+    this.speed = randomRange(50, this.maxSpeed);
+  }
 
+  enterTree() {
     const animation = new SpriteAnimation('razor');
     animation.spriteSheetImage = ImageUtils.getImage('enemy-razor');
     animation.spriteWidth = 213;
@@ -26,7 +29,7 @@ export default class Razor extends Enemy {
         frameLength: 9,
       }
     };
-    animation.fps = randomRange(15, 61);
+    animation.fps = this.speed / this.maxSpeed * 60;
     this.add(animation);
 
     animation.play('loop');
@@ -41,9 +44,7 @@ export default class Razor extends Enemy {
         randomRange(0, game.height - this.height));
       this.timer = 0;
     }
-    const dx = this.position.x - this.newPos.x;
-    const dy = this.position.y - this.newPos.y;
-    this.position.x -= dx / this.speed;
-    this.position.y -= dy / this.speed;
+    this.position.x -= (this.position.x - this.newPos.x) / this.speed;
+    this.position.y -= (this.position.y - this.newPos.y) / this.speed;
   }
 }

@@ -15,7 +15,9 @@ export default class Ghost1 extends Enemy {
     this.angle = random() * game.height;
     this.angleSpeed = randomRange(0.5, 2);
     this.lieftime = 0;
+  }
 
+  enterTree() {
     const animation = new SpriteAnimation('ghost1');
     animation.spriteSheetImage = ImageUtils.getImage('enemy-ghost1');
     animation.spriteWidth = 218;

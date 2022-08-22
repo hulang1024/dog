@@ -11,9 +11,11 @@ export default class Zombie extends Enemy {
     this.width = randomRange(90, 120);
     this.height = Math.round(this.width * 1.408);
     this.position.x = game.camera.position.x + game.width;
-    this.position.y = game.height - game.background.bottomMargin - this.height;
+    this.position.y = game.background.floorY - this.height;
     this.speed = randomRange(1, 6) * 20;
+  }
 
+  enterTree() {
     const animation = new SpriteAnimation('zombie');
     animation.spriteSheetImage = ImageUtils.getImage('enemy-zombie');
     animation.spriteWidth = 292;

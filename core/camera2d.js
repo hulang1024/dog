@@ -1,7 +1,7 @@
 import Node2D from "./node2d.js";
 import Vector2 from "./vector.js";
 
-export default class Camera extends Node2D {
+export default class Camera2D extends Node2D {
   constructor() {
     super();
     this.viewport = null;

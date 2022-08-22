@@ -14,6 +14,7 @@ import { random, randomRange } from '../core/random.js';
 export class EnemyManager extends Group {
   constructor(game) {
     super();
+    this.setPauseMode(PauseMode.Stop);
     this.game = game;
     this.player = game.player;
     this.camera = game.camera;
@@ -41,8 +42,6 @@ export class EnemyManager extends Group {
         enemy = new Plant(this.game);
       } else if (rv == 4) {
         enemy = new Zombie(this.game);
-      } else if (rv == 5) {
-        enemy = new Worm(this.game);
       } else if (rv == 5) {
         enemy = new Worm(this.game);
       } else if (rv == 6) {

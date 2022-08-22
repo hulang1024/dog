@@ -1,5 +1,6 @@
 export default class Node {
   constructor() {
+    this.root = null;
     this.parent = null;
     this.children = [];
     this.isQueuedForFree = false;
@@ -8,6 +9,8 @@ export default class Node {
   }
 
   enterTree() {}
+
+  ready() {}
 
   exitTree() {}
 
@@ -36,7 +39,16 @@ export default class Node {
     this.children.push(child);
     child.parent = this;
     this._inheritParentPause(child);
+  
+    if (!this.root) {
+      this.root = this.parent.root;
+    }
+    child.root = this.root;
+    child.root.addNode(child);
     child.enterTree();
+
+    // TODO: 正确的时机
+    child.ready();
   }
 
   _inheritParentPause(node) {
@@ -55,15 +67,16 @@ export default class Node {
     const i = this.children.indexOf(child);
     if (i > -1) {
       this.children.splice(i, 1);
-      child.exitTree();
-      child.children.forEach((node) => {
-        node.exitTree();
-      });
+      child.queueFree();
     }
   }
 
   queueFree() {
     this.isQueuedForFree = true;
+    traverseTrees(this.children, (node) => {
+      node.queueFree();
+      return true;
+    });
   }
 
   onKeyPressed(key) {

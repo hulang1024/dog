@@ -14,6 +14,9 @@ export class BaseSpider extends Enemy {
     this.slikColor = '#000';
     this.age = 0;
     this.ageMax = ageMax;
+  }
+
+  enterTree() {
     this.sound = new Sound2D('assets/sounds/spider_chattering.wav', this.game);
     this.sound.audio.loop = true;
     this.sound.play();
@@ -25,7 +28,7 @@ export class BaseSpider extends Enemy {
 
     this.position.y += this.velocity.y * delta;
     if (this.velocity.y > 0) {
-      const bottom = this.game.height - this.game.background.bottomMargin - 4;
+      const bottom = this.game.background.floorY - 4;
       if (this.position.y + this.height > bottom) {
         this.position.y = bottom - this.height;
         this.velocity.y = -this.velocity.y;
@@ -61,6 +64,11 @@ export class SmallSpider extends BaseSpider {
     this.velocity = new Vector2(0, randomRange(100, 180));
     this.slikWidth = 1;
     this.slikColor = 'rgba(0, 0, 0, ' + (this.width / maxWidth)  + ')';
+  }
+
+  enterTree() {
+    super.enterTree();
+
     this.sound.volumeFactor = 0.02;
 
     const animation = new SpriteAnimation('spider');
@@ -88,6 +96,11 @@ export class BigSpider extends BaseSpider {
     this.velocity = new Vector2(0, randomRange(30, 160));
     this.slikWidth = 1.5;
     this.slikColor = 'rgba(0, 0, 0, ' + (this.width / maxWidth)  + ')';
+  }
+
+  enterTree() {
+    super.enterTree();
+
     this.sound.volumeFactor = 0.04;
 
     const animation = new SpriteAnimation('spider_big');

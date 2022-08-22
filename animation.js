@@ -12,6 +12,7 @@ export class SpriteAnimation extends Node2D {
     this.spriteSheetImage = null;
     this.spriteWidth = 0;
     this.spriteHeight = 0;
+    this.scale = 1;
     this.frameCol = 0;
     this.frameRow = 0;
     this.frameLength = 6;
@@ -28,12 +29,17 @@ export class SpriteAnimation extends Node2D {
       const anim = this.animations[animName];
       this._animationFrameImages[animName] = [];
       for (let col = 0; col < anim.frameLength; col++) {
+        let cachedName = this.name;
+        if (this.scale != 1) {
+          cachedName += '_' + this.scale;
+        }
+        cachedName += '/' + animName + '/' + col;
         const cachedImage = ImageUtils.cachedRegion(
-          this.name + '/' + animName + '/' + col,
+          cachedName,
           this.spriteSheetImage,
           col * this.spriteWidth, anim.frameRow * this.spriteHeight,
           this.spriteWidth, this.spriteHeight,
-          0, 0, this.parent.width, this.parent.height);
+          0, 0, this.spriteWidth * this.scale, this.spriteHeight * this.scale);
         this._animationFrameImages[animName].push(cachedImage);
       }
     }

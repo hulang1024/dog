@@ -11,25 +11,29 @@ export default class Background extends CanvasLayer {
     this.setPauseMode(PauseMode.Process);
     this.scrollOffset = this.viewport.canvasTransform;
     this.theme = random() > 0.5 ? 'city' : 'forest';
-    // TODO: 去掉
-    this.bottomMargin = {city: 82, forest: 40}[this.theme];
+    this.floorY = viewport.height - {city: 82, forest: 40}[this.theme];
+  }
 
+  enterTree() {
+    super.enterTree();
     const width = 1667;
     const height = 500;
     for (let l = 0; l < 5; l++) {
       const id = 'bg-' +  this.theme + '-layer-' + (l + 1);
       const image = ImageUtils.getImage(id);
-      const layer = new ParallaxLayer(viewport, width, height, id, image);
+      const layer = new ParallaxLayer(this.viewport, width, height, id, image);
       this.add(layer);
     }
   }
 
   update() {
     this.context2d.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.children.forEach((layer, l) => {
+    let layer;
+    for (let l = 0, len = this.children.length; l < len; l++) {
+      layer = this.children[l];
       layer.motionOffset.x = this.scrollOffset.x * 0.2 * (l + 1) - this.scrollOffset.x;
       layer.draw();
-    });
+    }
   }
 }
 
@@ -47,14 +51,15 @@ class ParallaxLayer extends Node2D {
       0, 0, this.viewport.width, height + extendY);
   }
 
-  enterTree() {
+  ready() {
     this.update();
   }
 
   update() {
-    this.position.x = Math.floor((this.parent.scrollOffset.x + this.motionOffset.x)
-      % this.width);
-    this.position.y = Math.floor(this.parent.scrollOffset.y + this.motionOffset.y);
+    this.position.x = (0.5 +
+      ((this.parent.scrollOffset.x + this.motionOffset.x) % this.width)) << 0;
+    this.position.y = (0.5 +
+      (this.parent.scrollOffset.y + this.motionOffset.y)) << 0;
   }
 
   draw() {

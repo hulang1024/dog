@@ -24,7 +24,9 @@ export class Bat1 extends BaseBat {
     super(game, 2);
     this.width = randomRange(83, 100)
     this.height = Math.round(this.width * 0.53);
+  }
 
+  enterTree() {
     const animation = new SpriteAnimation('bat1');
     animation.spriteSheetImage = ImageUtils.getImage('enemy-bat1');
     animation.spriteWidth = 83;
@@ -47,7 +49,9 @@ export class Bat2 extends BaseBat {
     super(game, 2);
     this.width = randomRange(83, 100)
     this.height = Math.round(this.width * 0.701);
+  }
 
+  enterTree() {
     const animation = new SpriteAnimation('bat2');
     animation.spriteSheetImage = ImageUtils.getImage('enemy-bat2');
     animation.spriteWidth = 238;

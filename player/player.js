@@ -19,7 +19,7 @@ export default class Player extends Node2D {
     this.width = 100;
     this.height = 91.3;
     this.position.x = 0
-    this.position.y = this.game.height - this.height - this.game.background.bottomMargin;
+    this.position.y = this.game.background.floorY - this.height;
     this.velocity = Vector2.Zero();
     this.weight = 120;
     // 无敌时长（应大于受击或眩晕的动画时长）
@@ -33,6 +33,11 @@ export default class Player extends Node2D {
       height: this.height - 20,
     };
     
+    setupStateTable(this);
+    this.nowState = getState(StateId.Sitting);
+  }
+
+  enterTree() {
     this.animation = new SpriteAnimation('player_black');
     this.animation.spriteSheetImage = ImageUtils.getImage('player-black');
     this.animation.spriteWidth = 100;
@@ -40,8 +45,6 @@ export default class Player extends Node2D {
     this.animation.animations = playerAnimations;
     this.add(this.animation);
 
-    setupStateTable(this);
-    this.nowState = getState(StateId.Sitting);
     this.nowState.onEnter();
   }
 
@@ -108,7 +111,7 @@ export default class Player extends Node2D {
       this.velocity.y = this.velocity.y + this.weight;
     } else {
       this.velocity.y = 0;
-      this.position.y = this.game.height - this.height - this.game.background.bottomMargin;
+      this.position.y = this.game.background.floorY - this.height;
     }
   }
 
@@ -125,8 +128,7 @@ export default class Player extends Node2D {
   }
 
   isOnFloor() {
-    return this.position.y >=
-      this.game.height - this.height - this.game.background.bottomMargin;
+    return this.position.y >= this.game.background.floorY - this.height;
   }
 }
 

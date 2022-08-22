@@ -1,4 +1,5 @@
 import Node from "./node.js";
+
 import Vector2 from './vector.js'
 
 export default class CanvasItem extends Node {

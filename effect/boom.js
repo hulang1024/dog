@@ -8,6 +8,9 @@ export default class Boom extends Node2D {
     this.width = 100;
     this.height = 90;
     this.position.set(x, y);
+  }
+
+  enterTree() {
     const animation = new SpriteAnimation('boom');
     animation.spriteSheetImage = ImageUtils.getImage('boom');
     animation.spriteWidth = this.width;

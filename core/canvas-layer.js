@@ -10,6 +10,10 @@ export default class CanvasLayer extends Node {
     this.zIndex = zIndex;
     this.id = id;
     this.followViewportEnable = false;
+  
+    // 直接或间接子级的CanvasItem
+    this.canvasItems = [];
+
     const canvas = createCanvas(viewport.width, viewport.height, id);
     canvas.style.zIndex = zIndex;
     this.canvas = canvas;
@@ -20,6 +24,10 @@ export default class CanvasLayer extends Node {
     document.body.appendChild(this.canvas);
   }
 
+  exitTree() {
+    document.body.removeChild(this.canvas);
+  }
+
   add(node) {
     super.add(node);
     node.context2d = this.context2d;
@@ -28,13 +36,8 @@ export default class CanvasLayer extends Node {
   update(delta) {
     this.context2d.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    traverseTrees(this.children, (node) => {
-      if (node instanceof CanvasItem) {
-        node.transform = this.viewport.canvasTransform;
-        node.context2d = this.context2d;
-        node.draw(delta);
-      }
-      return true;
-    });
+    for (let i = 0, cnt = this.canvasItems.length; i < cnt; i++) {
+      this.canvasItems[i].draw(delta);
+    }
   }
 }

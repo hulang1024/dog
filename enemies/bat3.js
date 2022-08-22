@@ -14,7 +14,9 @@ export default class Bat3 extends Enemy {
     this.angle = 0;
     this.angleSpeed = random() * 0.2 * 62;
     this.curve = randomRange(0, 2);
+  }
 
+  enterTree() {
     const animation = new SpriteAnimation('bat3');
     animation.spriteSheetImage = ImageUtils.getImage('enemy-bat3');
     animation.spriteWidth = 266;
