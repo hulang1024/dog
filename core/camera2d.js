@@ -81,7 +81,6 @@ export default class Camera2D extends Node2D {
     if (target != this.lookAtTarget) {
       console.log('相机看向 ' + target.constructor.name);
     }
-    this.followTarget = null;
     this.lookAtTarget = target;
   }
 
@@ -93,7 +92,6 @@ export default class Camera2D extends Node2D {
         console.log('相机取消跟随对象');
       }
     }
-    this.lookAtTarget = null;
     this.followTarget = target;
   }
 

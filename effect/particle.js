@@ -27,7 +27,6 @@ export class DustParticle extends Particle {
 
   update(delta) {
     super.update(delta);
-
     this.size *= 0.95;
     if (this.size < 0.5) {
       this.queueFree();
@@ -35,7 +34,6 @@ export class DustParticle extends Particle {
   }
 
   draw() {
-    super.draw();
     this.drawArc(this.position,
       this.size, 0, Math.PI * 2, 'rgba(10, 10, 10, 0.3)');
   }
@@ -63,10 +61,9 @@ export class FireParticle extends Particle {
   }
 
   draw() {
-    super.draw();
     // tood: 不用translate
     this.context2d.save();
-    const transform = this.getTransform();
+    const transform = this.transform;
     this.context2d.translate(this.position.x + transform.x, this.position.y + transform.y);
     this.context2d.rotate(this.angle);
     this.context2d.drawImage(this.image, -this.size * 0.5, -this.size * 0.5, this.size, this.size);
@@ -96,7 +93,6 @@ export class SplashParticle extends Particle {
   }
 
   draw() {
-    super.draw();
     this.drawImage(this.image, this.position.x, this.position.y, this.size, this.size);
   }
 }

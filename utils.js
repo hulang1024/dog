@@ -13,6 +13,7 @@ export class DebugInfoLayer extends CanvasLayer {
   }
 
   update(delta) {
+    const { context2d } = this;
     context2d.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     let y = BASE_Y;
@@ -20,7 +21,6 @@ export class DebugInfoLayer extends CanvasLayer {
     const { game } = this;
     const { camera, player } = game;
 
-    const context2d = this.context2d;
     context2d.font = '14px monospace';
     if (game.background.theme == 'forest') {
       context2d.fillStyle = 'rgba(255, 255, 255, 0.6)';
@@ -33,7 +33,7 @@ export class DebugInfoLayer extends CanvasLayer {
       + (camera.followTarget ? camera.followTarget.constructor.name : null), BASE_X, newLine());
     context2d.fillText('camera.lookAtTarget:     '
       + (camera.lookAtTarget ? camera.lookAtTarget.constructor.name : null), BASE_X, newLine());
-    context2d.fillText('object count:   ' + countObject(game), BASE_X, newLine());
+    context2d.fillText('node count:   ' + game.nodes.length, BASE_X, newLine());
     context2d.fillText('enemy count:    ' + game.enemyManager.count(), BASE_X, newLine());
     context2d.fillText('particle count: ' + game.particleGroup.count(), BASE_X, newLine());
     context2d.fillText('player.velocity:  ' + player.velocity, BASE_X, newLine());
@@ -50,14 +50,6 @@ export class DebugInfoLayer extends CanvasLayer {
       context2d.fillText(key, game.width - 70, newLine());
     });
   }
-}
-
-function countObject(node) {
-  let cnt = node.children.length;
-  node.children.forEach((child) => {
-    cnt += countObject(child);
-  });
-  return cnt;
 }
 
 export function parseSearchParams() {

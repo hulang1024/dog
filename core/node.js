@@ -5,7 +5,7 @@ export default class Node {
     this.children = [];
     this.isQueuedForFree = false;
     this._pauseMode = PauseMode.Inherit;
-    this._processOnPause = false;
+    this.isProcessOnPause = false;
   }
 
   enterTree() {}
@@ -16,17 +16,13 @@ export default class Node {
 
   update(delta) {}
 
-  isProcessOnPause() {
-    return this._processOnPause;
-  }
-
   setPauseMode(pauseMode) {
     this._pauseMode = pauseMode;
     this._inheritParentPause(this);
 
     traverseTrees(this.children, (node) => {
       if (node._pauseMode == PauseMode.Inherit) {
-        this._processOnPause = node.parent._processOnPause;
+        this.isProcessOnPause = node.parent.isProcessOnPause;
         return true;
       } else {
         // 结点的变化只影响直接继承的子结点
@@ -53,14 +49,10 @@ export default class Node {
 
   _inheritParentPause(node) {
     if (node._pauseMode == PauseMode.Inherit) {
-      node._processOnPause = node.parent._processOnPause;
+      node.isProcessOnPause = node.parent.isProcessOnPause;
     } else {
-      node._processOnPause = node._pauseMode == PauseMode.Process;
+      node.isProcessOnPause = node._pauseMode == PauseMode.Process;
     }
-  }
-
-  getChildren() {
-    return this.children;
   }
 
   removeChild(child) {
@@ -94,6 +86,9 @@ export default class Node {
 
 export class Group extends Node {
   clear() {
+    this.children.forEach((node) => {
+      node.queueFree();
+    });
     this.children = [];
   }
 

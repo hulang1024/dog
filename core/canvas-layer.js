@@ -36,8 +36,9 @@ export default class CanvasLayer extends Node {
   update(delta) {
     this.context2d.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    for (let i = 0, cnt = this.canvasItems.length; i < cnt; i++) {
-      this.canvasItems[i].draw(delta);
+    const { canvasItems } = this;
+    for (let i = canvasItems.length - 1; i >= 0; i--) {
+      canvasItems[i].draw(delta);
     }
   }
 }

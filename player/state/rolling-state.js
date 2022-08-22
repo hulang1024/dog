@@ -12,7 +12,6 @@ export default class RollingState extends State {
 
   onEnter() {
     this.camera.changeSpeed(this.hMaxSpeed);
-    this.camera.follow(this.player);
     this.player.velocity.x = Math.sign(this.player.velocity.x || 1) * this.hMaxSpeed;
     this.player.animation.play('roll');
     this.fireParticlesManager.reset();

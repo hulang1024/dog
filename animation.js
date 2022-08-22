@@ -21,10 +21,13 @@ export class SpriteAnimation extends Node2D {
     this.animations = {};
     this.isPause = true;
     this.animationName = '';
+    this._currentAnimationFrameImages = [];
     this.finishOnceCallbacks = {};
   }
 
   enterTree() {
+    this.parentPosition = this.parent.position;
+
     for (const animName in this.animations) {
       const anim = this.animations[animName];
       this._animationFrameImages[animName] = [];
@@ -53,6 +56,7 @@ export class SpriteAnimation extends Node2D {
     this.frameLength = animation.frameLength;
     this.intervelTime = 0;
     this.isPause = false;
+    this._currentAnimationFrameImages = this._animationFrameImages[name];
   }
 
   pause() {
@@ -64,7 +68,7 @@ export class SpriteAnimation extends Node2D {
       return;
     }
     this.intervelTime += delta;
-    if (this.intervelTime >= 1000 / this.fps / 1000) {
+    if (this.intervelTime >= 1 / this.fps) {
       if (this.frameCol < this.frameLength - 1) {
         this.frameCol++;
       } else {
@@ -79,9 +83,9 @@ export class SpriteAnimation extends Node2D {
 
   draw() {
     this.drawImage(
-      this._animationFrameImages[this.animationName][this.frameCol],
-      this.parent.position.x + this.position.x,
-      this.parent.position.y + this.position.y,
+      this._currentAnimationFrameImages[this.frameCol],
+      this.parentPosition.x + this.position.x,
+      this.parentPosition.y + this.position.y,
       this.parent.width, this.parent.height);
   }
 

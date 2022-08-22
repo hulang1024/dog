@@ -2,7 +2,7 @@ import CanvasLayer from "./core/canvas-layer.js";
 import { createCanvas } from "./core/canvas.js";
 import ImageUtils from "./core/image-utils.js";
 import { PauseMode } from "./core/node.js";
-import Game from "./game.js";
+import { ShadowTextContext } from "./core/text.js";
 
 const BASE_X = 20;
 const BASE_Y = 40;
@@ -12,22 +12,23 @@ export default class HUD extends CanvasLayer {
     super(viewport, 1, 'hud');
     this.setPauseMode(PauseMode.Process);
     this.game = game;
-    this.context2d.shadowOffsetX = 2;
-    this.context2d.shadowOffsetY = 2;
-    this.context2d.shadowColor = '#fff';
-    this.context2d.shadowBlur = 0;
     this.context2d.font = '34px Creepster';
     this.context2d.fillStyle = '#000';
-
     this.liveImages = [];
+
+    this.shadowTextContext = new ShadowTextContext(this.context2d);
+    this.shadowTextContext.set(2, 2, '#fff');
     this.preDrawLives(this.game.maxLives);
   }
 
   update(delta) {
     super.update(delta);
-    this.context2d.fillText('Score: ' + this.game.score, BASE_X, BASE_Y);
-    this.context2d.fillText('Time:  ' + this.game.time.toFixed(1), BASE_X, BASE_Y + 40);
-    this.context2d.fillText('Enemy: ' + this.game.enemyManager.count(), BASE_X, BASE_Y + 80);
+    const stc = this.shadowTextContext;
+    stc.start();
+    stc.drawText('Score: ' + this.game.score, BASE_X, BASE_Y);
+    stc.drawText('Time:  ' + this.game.time.toFixed(1), BASE_X, BASE_Y + 40);
+    stc.drawText('Enemy: ' + this.game.enemyManager.count(), BASE_X, BASE_Y + 80);
+    stc.end();
 
     if (this.game.lives > 0) {
       this.context2d.drawImage(this.liveImages[this.game.lives - 1],
@@ -38,18 +39,22 @@ export default class HUD extends CanvasLayer {
       this.context2d.save();
       this.context2d.font = '60px Creepster';
       this.context2d.textAlign = 'center';
-      this.context2d.fillText('Game Over!',
+      stc.start();
+      stc.drawText('Game Over!',
         this.game.width * 0.5, this.game.height * 0.5);
         this.context2d.font = '40px Creepster';
-      this.context2d.fillText('Press Enter To Restart',
-      this.game.width * 0.5, this.game.height * 0.5 + 50);
+      stc.drawText('Press Enter to restart',
+        this.game.width * 0.5, this.game.height * 0.5 + 50);
+      stc.end();
       this.context2d.restore();
     } else if (this.game.isPause) {
       this.context2d.save();
       this.context2d.font = '60px Creepster';
       this.context2d.textAlign = 'center';
-      this.context2d.fillText('Press Enter to Start!',
-      this.game.width * 0.5, this.game.height * 0.5);
+      stc.start();
+      stc.drawText('Press Enter to ' + (this.game.isStarted ? 'back game' : 'start'),
+        this.game.width * 0.5, this.game.height * 0.5);
+      stc.end();
       this.context2d.restore();
     }
   }

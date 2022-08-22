@@ -19,6 +19,7 @@ export default class Game extends Viewport {
     this.maxLives = 5;
     this.lives = this.maxLives;
     this.time = 0;
+    this.isStarted = false;
     this.isPause = true;
     this.isGameOver = false;
     this.setPauseMode(PauseMode.Stop);
@@ -54,19 +55,14 @@ export default class Game extends Viewport {
   }
 
   addNode(node) {
-    this.nodes.push(node);
-  
     if (node instanceof CanvasLayer) {
+      node.canvasLayer = node;
       this.canvasLayers.push(node);
+      this.nodes.unshift(node);
     } else {
       // 为直接或间接子级的CanvasItem保存最近的CanvasLayer
       if (!node.canvasLayer) {
-        let parent = node.parent;
-        if (parent instanceof CanvasLayer) {
-          node.canvasLayer = parent;
-        } else {
-          node.canvasLayer = parent.canvasLayer;
-        }
+        node.canvasLayer = node.parent.canvasLayer;
       }
       if (node instanceof CanvasItem) {
         const canvasLayer = node.canvasLayer;
@@ -74,26 +70,27 @@ export default class Game extends Viewport {
         node.transform = canvasLayer.viewport.canvasTransform;
         node.context2d = canvasLayer.context2d;
       }
+      this.nodes.push(node);
     }
   }
 
   update(delta) {
     if (this.isGameOver) {
       this.onGameOver();
-    }
-
-    if (!this.isPause) {
+    } else if (!this.isPause) {
       this.time += delta;
     }
 
-    this.nodes.forEach((node) => {
-      if (!this.isPause || node.isProcessOnPause()) {
+    let i = 0, nodeCount = this.nodes.length, node;
+    for (i = nodeCount - 1; i >= 0; i--) {
+      node = this.nodes[i];
+      if (!this.isPause || node.isProcessOnPause) {
         node.update(delta);
       }
-    });
+    }
 
-    let removeCnt = 0, node;
-    for (let i = 0, len = this.nodes.length; i < len; i++) {
+    let removeCnt = 0;
+    for (i = 0; i < nodeCount; i++) {
       node = this.nodes[i];
       if (node.isQueuedForFree) {
         node.parent.removeChild(node);
@@ -116,11 +113,10 @@ export default class Game extends Viewport {
     }
     this.isPause = true;
     pauseAllSounds();
-    traverseTrees(this.children, (node) => {
+    this.nodes.forEach((node) => {
       if (node instanceof Sound2D) {
         node.queueFree();
       }
-      return true;
     });
   }
 
@@ -130,6 +126,7 @@ export default class Game extends Viewport {
     this.time = 0;
 
     this.camera.reset();
+    this.camera.position.x = this.player.width;
 
     this.particleGroup.clear();
     this.enemyManager.clear();
@@ -140,6 +137,7 @@ export default class Game extends Viewport {
 
     this.isGameOver = false;
     this.isPause = false;
+    this.isStarted = true;
   }
 
   onKeyPressed(key) {
@@ -155,6 +153,7 @@ export default class Game extends Viewport {
           } else {
             resumeAllSounds();
           }
+          this.isStarted = true;
         }
         break;
       case Input.Keys.D:

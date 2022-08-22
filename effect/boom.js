@@ -25,6 +25,7 @@ export default class Boom extends Node2D {
 
     animation.play('boom');
     animation.onFinishOnce(() => {
+      animation.pause();
       this.queueFree();
     });
     /*

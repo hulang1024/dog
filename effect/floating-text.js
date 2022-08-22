@@ -1,5 +1,6 @@
 import { PauseMode } from '../core/node.js';
 import Node2D from '../core/node2d.js';
+import { ShadowTextContext } from "../core/text.js";
 
 export default class FloatingText extends Node2D {
   constructor(text, fontSize, fromPosition, toPosition) {
@@ -11,6 +12,11 @@ export default class FloatingText extends Node2D {
     this.toPosition = toPosition;
     this.speed = 0.03 * 62;
     this.timer = 0;
+  }
+
+  enterTree() {
+    this.shadowTextContext = new ShadowTextContext(this.context2d);
+    this.shadowTextContext.set(2, 2, '#fff');
   }
 
   update(delta) {
@@ -26,7 +32,9 @@ export default class FloatingText extends Node2D {
     super.draw();
     this.context2d.save();
     this.context2d.font = this.fontSize + 'px Creepster';
-    this.context2d.fillText(this.text, this.position.x, this.position.y);
+    this.shadowTextContext.start();
+    this.shadowTextContext.drawText(this.text, this.position.x, this.position.y);
+    this.shadowTextContext.end();
     this.context2d.restore();
   }
 }

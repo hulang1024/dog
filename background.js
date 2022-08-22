@@ -27,7 +27,6 @@ export default class Background extends CanvasLayer {
   }
 
   update() {
-    this.context2d.clearRect(0, 0, this.canvas.width, this.canvas.height);
     let layer;
     for (let l = 0, len = this.children.length; l < len; l++) {
       layer = this.children[l];

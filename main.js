@@ -19,11 +19,12 @@ window.addEventListener('load', () => {
 
   let lastTime = 0;
   let deltaTime;
+  const update = game.update.bind(game);
   function animate(nowTime) {
-    deltaTime = (nowTime - lastTime) / 1000;
+    deltaTime = (nowTime - lastTime) * 0.001;
     lastTime = nowTime;
 
-    game.update(deltaTime);
+    update(deltaTime);
 
     requestAnimationFrame(animate); 
   }

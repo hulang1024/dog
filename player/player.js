@@ -45,6 +45,8 @@ export default class Player extends Node2D {
     this.animation.animations = playerAnimations;
     this.add(this.animation);
 
+    this.game.camera.follow(this);
+
     this.nowState.onEnter();
   }
 
@@ -58,11 +60,11 @@ export default class Player extends Node2D {
       if (this.nowState.id == StateId.Rolling ||
           this.nowState.id == StateId.Diving) {
         enemies.forEach((enemy) => {
-          if (!enemy.getTransform()) {
+          if (!enemy.transform) {
             return;
           }
           this.game.score++;
-          const enemyScreenPos = enemy.position.plus(enemy.getTransform());
+          const enemyScreenPos = enemy.position.plus(enemy.transform);
           this.game.hud.add(new FloatingText(
             '+' + enemy.score, 26, enemyScreenPos, new Vector2(180, 40)));
           
@@ -87,12 +89,6 @@ export default class Player extends Node2D {
     if (this.position.x < 0) {
       this.position.x = 0;
       this.velocity.x = 0;
-    }
-
-    if (!this.game.camera.followTarget &&
-        this.velocity.x == 0 && this.velocity.y == 0 &&
-        this.position.x > this.game.camera.position.x + this.game.camera.width) {
-      this.game.camera.lookAt(this);
     }
   }
 

@@ -12,7 +12,7 @@ export default class Razor extends Enemy {
     this.width = randomRange(80, 100)
     this.height = Math.round(this.width * 0.995);
     this.newPos = null;
-    this.intervel = randomRange(3, 5);
+    this.intervel = randomRange(1, 3);
     this.timer = this.intervel + 1;
     this.maxSpeed = 71;
     this.speed = randomRange(50, this.maxSpeed);
@@ -40,7 +40,9 @@ export default class Razor extends Enemy {
     this.timer += delta;
     if (this.timer > this.intervel) {
       this.newPos = new Vector2(
-        randomRange(0, game.width - this.width),
+        randomRange(
+          game.camera.position.x,
+          game.camera.position.x + game.width - this.width),
         randomRange(0, game.height - this.height));
       this.timer = 0;
     }

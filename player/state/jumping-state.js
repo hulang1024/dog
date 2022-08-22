@@ -8,7 +8,6 @@ export default class JumpingState extends State {
   }
 
   onEnter() {
-    this.camera.follow(null);
     this.player.animation.play('jump');
     this.player.velocity.y = -this.maxSpeed;
   }

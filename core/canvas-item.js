@@ -1,11 +1,11 @@
 import Node from "./node.js";
-
 import Vector2 from './vector.js'
 
 export default class CanvasItem extends Node {
   constructor() {
     super();
     this.context2d = null;
+    // 有可能返回null，表示未绘制过
     this.transform = null;
   }
 
@@ -50,11 +50,6 @@ export default class CanvasItem extends Node {
     this.context2d.fillStyle = color;
     this.context2d.fillText(text, p.x, p.y);
     this.context2d.restore();
-  }
-
-  // 有可能返回null，表示未绘制过
-  getTransform() {
-    return this.transform;
   }
 
   _transform(p) {
