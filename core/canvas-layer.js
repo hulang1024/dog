@@ -1,6 +1,5 @@
 import { createCanvas } from "./canvas.js";
-import CanvasItem from "./canvas-item.js";
-import Node, { PauseMode, traverseTrees } from "./node.js";
+import Node, { PauseMode } from "./node.js";
 
 export default class CanvasLayer extends Node {
   constructor(viewport, zIndex, id) {
@@ -8,6 +7,8 @@ export default class CanvasLayer extends Node {
     this.setPauseMode(PauseMode.Process);
     this.viewport = viewport;
     this.zIndex = zIndex;
+    this.width = viewport.width;
+    this.height = viewport.height;
     this.id = id;
     this.followViewportEnable = false;
   
@@ -34,7 +35,7 @@ export default class CanvasLayer extends Node {
   }
 
   update(delta) {
-    this.context2d.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context2d.clearRect(0, 0, this.width, this.height);
 
     const { canvasItems } = this;
     for (let i = canvasItems.length - 1; i >= 0; i--) {
