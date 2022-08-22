@@ -97,6 +97,10 @@ export default class Game extends Viewport {
       node = this.nodes[i];
       if (node.isQueuedForFree) {
         node.parent.removeChild(node);
+        if (node instanceof CanvasItem) {
+          const i = node.canvasLayer.canvasItems.indexOf(node);
+          i >= 0 && node.canvasLayer.canvasItems.splice(i, 1);
+        }
         node.exitTree();
         removeCnt++;
       }
