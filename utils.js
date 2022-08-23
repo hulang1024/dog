@@ -44,7 +44,6 @@ export class DebugInfoLayer extends CanvasLayer {
     const fps = Math.round(1 / delta);
     context2d.fillText('FPS:   ' + fps, game.width - 128, BASE_Y);
     context2d.fillText('Delta: ' + delta.toFixed(6), game.width - 128, newLine());
-  
     context2d.fillText('Input.pressedKeys:', game.width - 158, newLine());
     Input.getPressedKeys().forEach((key) => {
       context2d.fillText(key, game.width - 70, newLine());

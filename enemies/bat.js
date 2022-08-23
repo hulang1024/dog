@@ -10,12 +10,13 @@ export default class BaseBat extends Enemy {
     this.height = Math.round(this.width * 0.53);
     this.position.x = game.camera.position.x + game.width;
     this.position.y = randomRange(this.height, game.height - this.height * 2);
+    this.swayRange = 3 * 60;
   }
 
   update(delta) {
     super.update(delta);
-    this.position.x += randomRange(-3, 3);
-    this.position.y += randomRange(-3, 3);
+    this.position.x += randomRange(-this.swayRange, this.swayRange) * delta;
+    this.position.y += randomRange(-this.swayRange, this.swayRange) * delta;
   }
 }
 

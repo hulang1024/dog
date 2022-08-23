@@ -11,9 +11,9 @@ export default class Fly extends Enemy {
     this.height = Math.round(this.width * 0.733);
     this.position.x = game.camera.position.x + game.width;
     this.position.y = this.height + randomRange(10, 30);
-    this.speed = randomRange(1, 5) * 62;
+    this.speed = randomRange(1, 5) * 60;
     this.angle = 0;
-    this.angleSpeed = random() * 0.2 * 62;
+    this.angleSpeed = random() * 0.2 * 60;
     this.curve = randomRange(0, 2);
   }
 

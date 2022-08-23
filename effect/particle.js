@@ -21,7 +21,7 @@ export class DustParticle extends Particle {
   constructor(x, y) {
     super();
     this.position.set(x, y);
-    this.velocity = new Vector2(-randomRange(0, 62), -randomRange(0, 62));
+    this.velocity = new Vector2(-randomRange(0, 60), -randomRange(0, 60));
     this.size = randomRange(10, 20);
   }
 
@@ -43,10 +43,10 @@ export class FireParticle extends Particle {
   constructor(x, y) {
     super();
     this.position.set(x, y);
-    this.velocity = new Vector2(-1 * 62, -1 * 62);
+    this.velocity = new Vector2(-1 * 60, -1 * 60);
     this.size = randomRange(90, 100);
     this.image = ImageUtils.cached('fire', ImageUtils.getImage('fire'), 100, 90);
-    this.va = randomRange(-1, 1) * 62;
+    this.va = randomRange(-1, 1) * 60;
     this.angle = 0;
   }
 
@@ -77,16 +77,16 @@ export class SplashParticle extends Particle {
     this.size = randomRange(100, 200);
     this.position.x = x - this.size * 0.4;
     this.position.y = y - this.size * 0.5;
-    this.velocity = new Vector2(randomRange(-4, 4) * 62, -randomRange(1, 3) * 62);
+    this.velocity = new Vector2(randomRange(-4, 4) * 60, -randomRange(1, 3) * 60);
     this.image = ImageUtils.getImage('fire');
     this.gravity = 0;
   }
 
   update(delta) {
     super.update(delta);
-    this.gravity += 0.1;
-    this.position.y += this.gravity;
-    this.size *= 0.95;
+    this.gravity += 6;
+    this.position.y += this.gravity * delta;
+    this.size *= 1 - 3 * delta;
     if (this.size < 0.5) {
       this.queueFree();
     }

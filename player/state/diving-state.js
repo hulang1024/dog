@@ -1,5 +1,6 @@
 import { SplashParticle } from '../../effect/particle.js';
 import { FireParticlesManager } from '../../effect/particle.js';
+import Timer from '../../core/timer.js';
 import { State, StateId } from './state.js';
 
 export default class DivingState extends State {
@@ -24,7 +25,12 @@ export default class DivingState extends State {
             this.player.position.x + this.player.width / 2,
             this.player.position.y + this.player.height));
       }
-      this.camera.offset.y = -8;
+      this.game.deltaRate = 0.1;
+      const timer = new Timer(1000);
+      timer.onTimeout(() => {
+        this.game.deltaRate = 1;
+      });
+      this.player.add(timer);
       if (this.player.velocity.x == 0) {
         this.to(StateId.Sitting);
       } else {

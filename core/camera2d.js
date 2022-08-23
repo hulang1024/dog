@@ -6,7 +6,7 @@ export default class Camera2D extends Node2D {
     super();
     this.viewport = null;
     this.smoothingEnabled = true;
-    this.smoothingSpeed = 62;
+    this.smoothingSpeed = 60;
     this.offset = Vector2.Zero();
     this.lookAtTarget = null;
     this.followTarget = null;

@@ -9,6 +9,7 @@ import Boom from '../effect/boom.js';
 import FloatingText from '../effect/floating-text.js';
 import ImageUtils from '../core/image-utils.js';
 import { PauseMode } from '../core/node.js';
+import { random } from '../core/random.js';
 
 export default class Player extends Node2D {
   constructor(game) {
@@ -38,8 +39,9 @@ export default class Player extends Node2D {
   }
 
   enterTree() {
-    this.animation = new SpriteAnimation('player_black');
-    this.animation.spriteSheetImage = ImageUtils.getImage('player-black');
+    const color = random() > 0.5 ? 'black' : 'white';
+    this.animation = new SpriteAnimation('player_' + color);
+    this.animation.spriteSheetImage = ImageUtils.getImage('player-' + color);
     this.animation.spriteWidth = 100;
     this.animation.spriteHeight = 91.3;
     this.animation.animations = playerAnimations;

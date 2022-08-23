@@ -58,10 +58,8 @@ export class Sound2D extends Node2D {
   }
 
   play() {
-    setTimeout(() => {
-      this.playing = true;
-      this.audio.play();
-    }, 0);
+    this.playing = true;
+    this.audio.play();
   }
 
   pause() {

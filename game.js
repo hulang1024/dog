@@ -11,6 +11,7 @@ import CanvasLayer from './core/canvas-layer.js';
 import Viewport from './core/viewport.js';
 import { DebugInfoLayer } from './utils.js';
 import CanvasItem from './core/canvas-item.js';
+import Timer from './core/timer.js';
 
 export default class Game extends Viewport {
   constructor() {
@@ -19,6 +20,7 @@ export default class Game extends Viewport {
     this.maxLives = 5;
     this.lives = this.maxLives;
     this.time = 0;
+    this.deltaRate = 1;
     this.isStarted = false;
     this.isPause = true;
     this.isGameOver = false;
@@ -59,6 +61,8 @@ export default class Game extends Viewport {
       node.canvasLayer = node;
       this.canvasLayers.push(node);
       this.nodes.unshift(node);
+    } else if (node instanceof Timer) {
+      this.nodes.unshift(node);
     } else {
       // 为直接或间接子级的CanvasItem保存最近的CanvasLayer
       if (!node.canvasLayer) {
@@ -75,6 +79,8 @@ export default class Game extends Viewport {
   }
 
   update(delta) {
+    delta *= this.deltaRate;
+
     if (this.isGameOver) {
       this.onGameOver();
     } else if (!this.isPause) {
@@ -114,7 +120,7 @@ export default class Game extends Viewport {
     this.isPause = true;
     pauseAllSounds();
     this.nodes.forEach((node) => {
-      if (node instanceof Sound2D) {
+      if (node instanceof Sound2D || node instanceof Timer) {
         node.queueFree();
       }
     });
@@ -124,6 +130,7 @@ export default class Game extends Viewport {
     this.score = 0;
     this.lives = this.maxLives;
     this.time = 0;
+    this.deltaRate = 1;
 
     this.camera.reset();
     this.camera.position.x = this.player.width;
@@ -184,11 +191,17 @@ export default class Game extends Viewport {
         this.camera.follow(
           this.camera.followTarget == this.player ? null : this.player);
         break;
-        case Input.Keys.Num7:
-          if (Game.isDebugMode) {
-            this.player.shadow = !this.player.shadow;
-          }
-          break;
+      case Input.Keys.Num4:
+        this.deltaRate = Math.max(0.01, this.deltaRate + 0.05);
+        break;
+      case Input.Keys.Num5:
+        this.deltaRate = this.deltaRate + 0.25;
+        break;
+      case Input.Keys.Num7:
+        if (Game.isDebugMode) {
+          this.player.shadow = !this.player.shadow;
+        }
+        break;
       case Input.Keys.Num8:
         if (Game.isDebugMode) {
           this.player.invincible = !this.player.invincible;

@@ -8,7 +8,7 @@ import Hand from './hand.js';
 import { Bat1, Bat2 } from './bat.js';
 import Bat3 from './bat3.js';
 import Ghost1 from './ghost1.js';
-import Razor from './Razor.js';
+import Razor from './razor.js';
 import { random, randomRange } from '../core/random.js';
 
 export class EnemyManager extends Group {

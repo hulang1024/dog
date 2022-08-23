@@ -14,8 +14,8 @@ export default class Razor extends Enemy {
     this.newPos = null;
     this.intervel = randomRange(1, 3);
     this.timer = this.intervel + 1;
-    this.maxSpeed = 71;
-    this.speed = randomRange(50, this.maxSpeed);
+    this.maxSpeed = 71 * 60;
+    this.speed = randomRange(50 * 60, this.maxSpeed);
   }
 
   enterTree() {
@@ -46,7 +46,7 @@ export default class Razor extends Enemy {
         randomRange(0, game.height - this.height));
       this.timer = 0;
     }
-    this.position.x -= (this.position.x - this.newPos.x) / this.speed;
-    this.position.y -= (this.position.y - this.newPos.y) / this.speed;
+    this.position.x -= (this.position.x - this.newPos.x) / (this.speed * delta);
+    this.position.y -= (this.position.y - this.newPos.y) / (this.speed * delta);
   }
 }

@@ -10,7 +10,7 @@ export default class FloatingText extends Node2D {
     this.fontSize = fontSize;
     this.position = fromPosition;
     this.toPosition = toPosition;
-    this.speed = 0.03 * 62;
+    this.speed = 0.03 * 60;
     this.timer = 0;
   }
 

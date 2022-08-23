@@ -11,9 +11,9 @@ export default class Ghost1 extends Enemy {
     this.height = Math.round(this.width * 0.811);
     this.position.x = game.camera.position.x + game.width;
     this.position.y = this.height + randomRange(10, 30);
-    this.speed = randomRange(1, 3) * 62;
+    this.speed = randomRange(1, 3) * 60;
     this.angle = random() * game.height;
-    this.angleSpeed = randomRange(0.5, 2);
+    this.angleSpeed = randomRange(0.5, 2) * 60;
     this.lieftime = 0;
   }
 
@@ -47,6 +47,6 @@ export default class Ghost1 extends Enemy {
       + (halfWidth - this.width / 2);
     this.position.y = this.camera.position.y + halfHeight * Math.sin(this.angle * Math.PI / 300)
       + (halfHeight - this.height / 2)
-    this.angle += this.angleSpeed;
+    this.angle += this.angleSpeed * delta;
   }
 }

@@ -1,4 +1,4 @@
-import Input from '../../core/input.js';
+import Timer from '../../core/timer.js';
 import { State, StateId } from './state.js';
 
 export class BaseGetHitState extends State {
@@ -31,9 +31,11 @@ export class BaseGetHitState extends State {
         }
       }
     });
-    setTimeout(() => {
+    const timer = new Timer(player.invincibleDuration);
+    timer.onTimeout(() => {
       player.invincible = false;
-    }, player.invincibleDuration);
+    });
+    this.player.add(timer);
   }
 }
 
