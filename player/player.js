@@ -2,7 +2,7 @@ import Game from '../game.js';
 import Node2D from '../core/node2d.js';
 import Vector2 from '../core/vector.js';
 import { setupStateTable } from './state/state-table.js';
-import { StateId, getState } from './state/state.js';
+import { StateId } from './state/state.js';
 import { SpriteAnimation } from '../animation.js';
 import { checkCollision } from '../core/collision.js';
 import Boom from '../effect/boom.js';
@@ -10,13 +10,30 @@ import FloatingText from '../effect/floating-text.js';
 import ImageUtils from '../core/image-utils.js';
 import { PauseMode } from '../core/node.js';
 import { random } from '../core/random.js';
+import Input from '../core/input.js';
+import ServerFrameInput from '../net/server-frame-input.js';
 
 export default class Player extends Node2D {
-  constructor(game) {
+  constructor(game, isLocalPlayer, id) {
     super();
     this.setPauseMode(PauseMode.Stop);
     this.game = game;
-    this.context = game.context;
+    this.id = id;
+    this.isLocalPlayer = isLocalPlayer;
+    if (isLocalPlayer) {
+      this.gameInput = Input;
+    } else {
+      this.gameInput = ServerFrameInput;
+      ServerFrameInput.addKeyListener(
+        (key) => {
+          this.nowState.onKeyPressed(key);
+        },
+        (key) => {
+          this.nowState.onKeyReleased(key);
+        }
+      );
+    }
+
     this.width = 100;
     this.height = 91.3;
     this.position.x = 0
@@ -35,11 +52,11 @@ export default class Player extends Node2D {
     };
     
     setupStateTable(this);
-    this.nowState = getState(StateId.Sitting);
+    this.nowState = this.stateTable[StateId.Sitting];
   }
 
   enterTree() {
-    const color = random() > 0.5 ? 'black' : 'white';
+    const color = this.id == 1 ? 'black' : 'white';
     this.animation = new SpriteAnimation('player_' + color);
     this.animation.spriteSheetImage = ImageUtils.getImage('player-' + color);
     this.animation.spriteWidth = 100;
@@ -53,7 +70,7 @@ export default class Player extends Node2D {
   }
 
   update(delta) {
-    this.nowState.onUpdate(delta);
+    this.nowState.onUpdate(delta, this.gameInput);
 
     this.hurtCollisionRect.position.set(this.position.x + 16, this.position.y + 20);
     const enemies = !this.shadow && checkCollision(
@@ -114,13 +131,13 @@ export default class Player extends Node2D {
   }
 
   onKeyPressed(key) {
-    if (!this.game.isPause) {
+    if (this.isLocalPlayer && !this.game.isPause) {
       this.nowState.onKeyPressed(key);
     }
   }
 
   onKeyReleased(key) {
-    if (!this.game.isPause) {
+    if (this.isLocalPlayer && !this.game.isPause) {
       this.nowState.onKeyReleased(key);
     }
   }

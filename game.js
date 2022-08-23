@@ -13,6 +13,7 @@ import { DebugInfoLayer } from './utils.js';
 import CanvasItem from './core/canvas-item.js';
 import Timer from './core/timer.js';
 import FrameSyncNode from './net/frame-sync.js';
+import SocketClient from './net/ws.js';
 
 export default class Game extends Viewport {
   constructor() {
@@ -29,6 +30,8 @@ export default class Game extends Viewport {
 
     this.root = this;
 
+    this.socketClient = new SocketClient();
+
     // (当前场景的)所有节点
     this.nodes  = [];
     // (当前场景的)所有CanvasLayer
@@ -44,19 +47,28 @@ export default class Game extends Viewport {
     this.background = new Background(this);
     this.add(this.background);
 
-    this.player = new Player(this);
+    this.player = new Player(this, true, SocketClient.uid);
+    this.otherPlayers = [new Player(this, false, SocketClient.uid == 1 ? 2 : 1)];
     this.particleGroup = new Group();
     this.enemyManager = new EnemyManager(this);
 
     this.canvasLayer.add(this.enemyManager);
     this.canvasLayer.add(this.particleGroup);
-    this.canvasLayer.add(this.player);    
+
+    const playerPos = {
+      1: 0,
+      2: this.player.width
+    };
+    [this.player, ...this.otherPlayers].forEach((player, index) => {
+      player.position.x += playerPos[player.id];
+      this.canvasLayer.add(player);
+    });
     this.canvasLayer.followViewportEnable = true;
 
     this.hud = new HUD(this, this);
     this.add(this.hud);
 
-    this.add(new FrameSyncNode());
+    this.add(new FrameSyncNode(this));
   }
 
   addNode(node) {
@@ -164,6 +176,7 @@ export default class Game extends Viewport {
             resumeAllSounds();
           }
           this.isStarted = true;
+          this.socketClient.send({type: 'start'});
         }
         break;
       case Input.Keys.D:

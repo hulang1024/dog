@@ -73,6 +73,7 @@ document.addEventListener('keyup', (e) => {
 
 const Input = {
   Keys: InputKeys,
+  pressedKeys,
   addKeyListener(pressedL, releasedL) {
     if (pressedL) {
       pressedListeners.add(pressedL);

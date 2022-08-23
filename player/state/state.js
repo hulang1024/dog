@@ -1,6 +1,6 @@
-import { StateId, getState } from "./state-table.js";
+import { StateId } from "./state-table.js";
 
-export { StateId, getState };
+export { StateId };
 
 export class State {
   constructor(id, player) {
@@ -16,10 +16,10 @@ export class State {
     if (player.nowState && newStateId == player.nowState.id) {
       return;
     }
-    player.nowState = getState(newStateId);
+    player.nowState = player.stateTable[newStateId];
     player.nowState.prevState = this;
     player.nowState.onEnter(args);
-    console.log('State:', this.id + '->' + newStateId);
+    //console.log('State:', this.id + '->' + newStateId);
   }
 
   onEnter() {}

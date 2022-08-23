@@ -12,7 +12,7 @@ export default class JumpingState extends State {
     this.player.velocity.y = -this.maxSpeed;
   }
 
-  onUpdate() {
+  onUpdate(_, Input) {
     const { player } = this;
     if (Input.isPressed(Input.Keys.Left)) {
       player.velocity.x = -360;

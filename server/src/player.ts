@@ -1,10 +1,12 @@
 import { WebSocket } from "ws";
-import Room from "./room";
+import { InputFrame } from "./frame";
+import Room, { NullRoom } from "./room";
 
 export default class Player {
   id: number;
   client: WebSocket;
-  room: Room | null = null;
+  room: Room = NullRoom;
+  frames: InputFrame[] = [];
 
   constructor(id: number, client: WebSocket) {
     this.id = id;
@@ -13,9 +15,11 @@ export default class Player {
 }
 
 export class PlayerManager {
+  players: Set<Player> = new Set();
   idToPlayer: Map<number, Player> = new Map();
 
   add(player: Player) {
+    this.players.add(player);
     this.idToPlayer.set(player.id, player);
   }
 

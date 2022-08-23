@@ -17,7 +17,7 @@ export default class RollingState extends State {
     this.fireParticlesManager.reset();
   }
 
-  onUpdate() {
+  onUpdate(_, Input) {
     const { player } = this;
     if (player.isOnFloor()) {
       if (Input.isPressed(Input.Keys.Space)) {

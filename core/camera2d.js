@@ -19,7 +19,7 @@ export default class Camera2D extends Node2D {
 
   changeSpeed(val) {
     if (this.smoothingSpeed != val) {
-      console.log('相机速度改变为' + val);
+      //console.log('相机速度改变为' + val);
     }
     this.smoothingSpeed = val;
   }
@@ -71,7 +71,7 @@ export default class Camera2D extends Node2D {
     
     if (this.position.x == targetX) {
       if (this.lookAtTarget) {
-        console.log('相机已看向 ' + target.constructor.name);
+        //console.log('相机已看向 ' + target.constructor.name);
         this.lookAtTarget = null;
       }
     }
@@ -79,7 +79,7 @@ export default class Camera2D extends Node2D {
 
   lookAt(target) {
     if (target != this.lookAtTarget) {
-      console.log('相机看向 ' + target.constructor.name);
+      //console.log('相机看向 ' + target.constructor.name);
     }
     this.lookAtTarget = target;
   }
@@ -87,9 +87,9 @@ export default class Camera2D extends Node2D {
   follow(target) {
     if (target != this.followTarget) {
       if (target) {
-        console.log('相机跟随 ' + target.constructor.name);
+        //console.log('相机跟随 ' + target.constructor.name);
       } else {
-        console.log('相机取消跟随对象');
+        //console.log('相机取消跟随对象');
       }
     }
     this.followTarget = target;

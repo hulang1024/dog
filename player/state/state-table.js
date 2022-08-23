@@ -22,10 +22,8 @@ export const StateId = {
   Dead: 'Dead',
 };
 
-let stateTable = null;
-
 export function setupStateTable(player) {
-  stateTable = {
+  player.stateTable = {
     [StateId.Standing]: new StandingState(player),
     [StateId.Sitting]: new SittingState(player),
     [StateId.Running]: new RunningState(player),
@@ -37,9 +35,4 @@ export function setupStateTable(player) {
     [StateId.Diving] : new DivingState(player),
     [StateId.Dead] : new DeadState(player),
   };
-  return stateTable;
-}
-
-export function getState(stateId) {
-  return stateTable[stateId];
 }

@@ -9,4 +9,21 @@ export default class Room {
   constructor() {
     this.id = RoomId++;
   }
+
+  add(player: Player) {
+    player.room = this;
+    this.players.add(player);
+  }
 }
+
+export class RoomManager {
+  rooms: Set<Room> = new Set();
+
+  create() {
+    const room = new Room();
+    this.rooms.add(room);
+    return room;
+  }
+}
+
+export const NullRoom = new Room();

@@ -1,15 +1,16 @@
 import { parseSearchParams } from "../utils.js";
 
 export default class SocketClient {
-  constructor(onConnect) {
+  constructor() {
+    SocketClient.uid = parseSearchParams().uid
     // TODO: token
-    const ws = new WebSocket('ws://localhost:8080?uid=' + parseSearchParams().uid);
+    const ws = new WebSocket('ws://localhost:8080?uid=' + SocketClient.uid);
     this.ws = ws;
-    this.dataListeners = [];
+    this.messageListeners = [];
 
     ws.onopen = (ev) => {
       console.log('open', ev);
-      this.login();
+      //this.login();
     };
     ws.onclose = (ev) => {
       console.log('close', ev);
@@ -18,12 +19,12 @@ export default class SocketClient {
       console.log('error', ev);
     };
     ws.onmessage = (event) => {
-      this.dataListeners.forEach((l) => l(event.data));
+      this.messageListeners.forEach((l) => l(event.data));
     };
   }
 
-  onData(l) {
-    this.dataListeners.push(l);
+  onMessage(l) {
+    this.messageListeners.push(l);
   }
 
   login() {
