@@ -1,4 +1,4 @@
-import { PauseMode, traverseTrees } from './core/node.js';
+import { PauseMode } from './core/node.js';
 import { Group } from './core/node.js';
 import Background from './background.js';
 import Camera2D from './core/camera2d.js';
@@ -12,6 +12,7 @@ import Viewport from './core/viewport.js';
 import { DebugInfoLayer } from './utils.js';
 import CanvasItem from './core/canvas-item.js';
 import Timer from './core/timer.js';
+import FrameSyncNode from './net/frame-sync.js';
 
 export default class Game extends Viewport {
   constructor() {
@@ -54,6 +55,8 @@ export default class Game extends Viewport {
 
     this.hud = new HUD(this, this);
     this.add(this.hud);
+
+    this.add(new FrameSyncNode());
   }
 
   addNode(node) {
@@ -61,7 +64,7 @@ export default class Game extends Viewport {
       node.canvasLayer = node;
       this.canvasLayers.push(node);
       this.nodes.unshift(node);
-    } else if (node instanceof Timer) {
+    } else if (node instanceof Timer || node instanceof FrameSyncNode) {
       this.nodes.unshift(node);
     } else {
       // 为直接或间接子级的CanvasItem保存最近的CanvasLayer
