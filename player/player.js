@@ -9,22 +9,22 @@ import Boom from '../effect/boom.js';
 import FloatingText from '../effect/floating-text.js';
 import ImageUtils from '../core/image-utils.js';
 import { PauseMode } from '../core/node.js';
-import { random } from '../core/random.js';
 import Input from '../core/input.js';
-import ServerFrameInput from '../net/server-frame-input.js';
+import { RemotePlayerInputManager } from '../net/input.js';
 
 export default class Player extends Node2D {
-  constructor(game, isLocalPlayer, id) {
+  constructor(game, isLocalPlayer, id, no) {
     super();
     this.setPauseMode(PauseMode.Stop);
     this.game = game;
     this.id = id;
+    this.no = no;
     this.isLocalPlayer = isLocalPlayer;
     if (isLocalPlayer) {
       this.gameInput = Input;
     } else {
-      this.gameInput = ServerFrameInput;
-      ServerFrameInput.addKeyListener(
+      this.gameInput = RemotePlayerInputManager.create(this);
+      this.gameInput.addKeyListener(
         (key) => {
           this.nowState.onKeyPressed(key);
         },
@@ -64,7 +64,9 @@ export default class Player extends Node2D {
     this.animation.animations = playerAnimations;
     this.add(this.animation);
 
-    this.game.camera.follow(this);
+    if (!this.isLocalPlayer) {
+      this.game.camera.follow(this);
+    }
 
     this.nowState.onEnter();
   }

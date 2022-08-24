@@ -1,12 +1,12 @@
 import { WebSocket } from "ws";
-import { InputFrame } from "./frame";
 import Room, { NullRoom } from "./room";
 
 export default class Player {
   id: number;
   client: WebSocket;
   room: Room = NullRoom;
-  frames: InputFrame[] = [];
+  // 1个操作帧：32位：高8位记录输入操作，低24位记录帧号
+  frames: number[] = [];
 
   constructor(id: number, client: WebSocket) {
     this.id = id;

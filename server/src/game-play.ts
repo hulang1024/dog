@@ -33,16 +33,18 @@ export default class GamePlayHandler {
       players.forEach((player) => {
         // 向同房间的玩家发送其它玩家的帧
         const roomPlayers = player.room.players;
-        let updateFrame = new Uint32Array(roomPlayers.size - 1);
-        let index = 0;
+        // 低3个字节记录帧号，高位(1字节 * 玩家数-1)记录输入操作
+        let updateFrame = new ArrayBuffer(3 + roomPlayers.size - 1);
+        let dv = new DataView(updateFrame);
+        dv.setUint32(0, this.frameId, true);
+        let offset = 3;
         roomPlayers.forEach((other) => {
           if (player != other) {
-            let input = other.frames[this.frameId];
-            updateFrame[index++] = (input ? input << 24 : 0) | this.frameId;
+            dv.setUint8(offset++, other.frames[this.frameId] || 0);
           }
         });
         if (player.client.readyState == 1) {
-          player.client.send(updateFrame);
+          player.client.send(Buffer.from(updateFrame));
         }
       });
       this.frameId++;

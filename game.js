@@ -47,8 +47,11 @@ export default class Game extends Viewport {
     this.background = new Background(this);
     this.add(this.background);
 
-    this.player = new Player(this, true, SocketClient.uid);
-    this.otherPlayers = [new Player(this, false, SocketClient.uid == 1 ? 2 : 1)];
+    this.player = new Player(this, true, SocketClient.uid, SocketClient.uid);
+    this.otherPlayers = [
+      new Player(this, false,
+        SocketClient.uid == 1 ? 2 : 1, SocketClient.uid == 1 ? 2 : 1)
+    ];
     this.particleGroup = new Group();
     this.enemyManager = new EnemyManager(this);
 

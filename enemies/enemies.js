@@ -21,7 +21,7 @@ export class EnemyManager extends Group {
   }
 
   update() {
-    for (let count = 11 - this.count(); count > 0; count--) {
+    for (let count = 0 - this.count(); count > 0; count--) {
       const rv = Math.floor(randomRange(1, 11));
       let enemy;
       if (rv == 1) {

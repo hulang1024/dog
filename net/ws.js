@@ -9,7 +9,7 @@ export default class SocketClient {
     this.messageListeners = [];
 
     ws.onopen = (ev) => {
-      console.log('open', ev);
+      console.log('open');
       //this.login();
     };
     ws.onclose = (ev) => {

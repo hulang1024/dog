@@ -1,7 +1,7 @@
 import { WebSocket, Server, RawData } from 'ws';
 import GamePlayHandler from './game-play';
 import Player, { PlayerManager } from './player';
-import Room, { RoomManager } from './room';
+import { RoomManager } from './room';
 
 export default class GameServer {
   wsServer: Server<WebSocket> | null = null;
@@ -40,23 +40,22 @@ export default class GameServer {
       if (room.players.size < 2) {
         room.add(player);
       }
-      if (room.players.size == 2) {
-        console.log('full');
-      }
 
-      ws.on('message', (data: RawData) => {
-        if (data instanceof Buffer) {
-          gamePlayHandler.onFrame(data, player!);
-        } else if (typeof data == 'string') {
-          const msg = JSON.parse(data as string);
+      ws.on('message', (data: RawData, isBinary: boolean) => {
+        if (isBinary) {
+          gamePlayHandler.onFrame(data as Buffer, player!);
+        } else {
+          const jsonMsg = data.toString();
+          const msg = JSON.parse(jsonMsg);
           if (msg.type == 'start') {
+            console.log('start');
             gamePlayHandler.stopFrameLoop();
             gamePlayHandler.clearFrames();
             gamePlayHandler.startFrameLoop();
           }
           room.players.forEach((player) => {
             if (player.client != ws && player.client.readyState === 1) {
-              player.client.send(data);
+              player.client.send(jsonMsg);
             }
           });
         }
